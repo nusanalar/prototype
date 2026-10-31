@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lembar Pengamatan · Observation Sheet</title>
+<style>
+:root { --bg:#0B1F30; --card:#12304a; --line:#2a4f70; --text:#eef4f8; --muted:#a9bfd0; --lantern:#FFC857; --palm:#3F8F6E; --sky:#7FC8F8; --field:#0f2840; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.wrap { max-width:900px; margin:0 auto; padding:28px 16px 48px; }
+header { border-bottom:2px solid var(--lantern); padding-bottom:12px; margin-bottom:18px; }
+.eyebrow { color:var(--lantern); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:.75rem; }
+h1 { margin:.2em 0 0; font-size:1.7rem; line-height:1.2; }
+h1 .en, h2 .en, h3 .en { font-weight:500; color:var(--muted); font-size:.72em; }
+h2 { font-size:1.15rem; margin:26px 0 8px; padding-bottom:4px; border-bottom:1px solid var(--line); }
+h3 { font-size:1rem; margin:14px 0 6px; }
+p { margin:.3em 0; }
+.en { display:block; color:var(--muted); font-size:.88em; }
+.print-btn { float:right; background:var(--lantern); color:#2b1d00; border:0; border-radius:999px; padding:8px 16px; font-weight:700; cursor:pointer; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px 16px; }
+.field { display:block; }
+.field span { display:block; font-size:.82rem; color:var(--muted); }
+.line { border-bottom:1px solid var(--muted); min-height:28px; }
+.boxes { display:flex; flex-wrap:wrap; gap:6px 14px; }
+.cb { display:inline-flex; align-items:flex-start; gap:6px; }
+.cb::before { content:""; flex:none; width:14px; height:14px; margin-top:3px; border:1.5px solid var(--text); border-radius:3px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; font-size:.85rem; }
+th, td { border:1px solid var(--line); padding:6px 7px; vertical-align:top; text-align:left; }
+th { background:var(--field); font-size:.76rem; }
+th .en { font-size:.95em; }
+td.write { height:54px; }
+td.tick { text-align:center; width:56px; }
+td.tick::before { content:""; display:inline-block; width:14px; height:14px; border:1.5px solid var(--text); border-radius:3px; }
+ol, ul { padding-left:20px; margin:.3em 0; }
+li { margin:.35em 0; }
+.q .line { margin:4px 0 10px; }
+.summary .line { min-height:34px; }
+.timing { display:grid; grid-template-columns:90px 1fr; gap:6px 12px; }
+.timing b { color:var(--lantern); }
+@media print {
+  :root { --bg:#fff; --card:#fff; --line:#999; --text:#000; --muted:#444; --lantern:#000; --field:#eee; }
+  body { font-size:11.5px; }
+  .wrap { max-width:none; padding:0; }
+  .print-btn { display:none; }
+  h2 { break-after:avoid; }
+  .card, table, .summary { break-inside:avoid; }
+  .page-break { break-before:page; }
+  @page { size:A4; margin:14mm; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <button class="print-btn" type="button" onclick="window.print()">Cetak · Print</button>
+  <div class="eyebrow">Nusa Nalar · Uji main prototipe</div>
+  <h1>Lembar Pengamatan <span class="en">Observation sheet · one child per sheet</span></h1>
+  <p>Satu lembar untuk satu anak. Isi sambil menonton anak bermain di <b>nusanalar.github.io/prototype</b>.<span class="en">One sheet per child. Fill it in while watching the child play at nusanalar.github.io/prototype.</span></p>
+</header>
+
+<h2>1. Data anak <span class="en">Child information</span></h2>
+<div class="grid">
+  <label class="field"><span>Nama depan · First name</span><div class="line"></div></label>
+  <label class="field"><span>Usia · Age</span><div class="line"></div></label>
+  <label class="field"><span>Tanggal · Date</span><div class="line"></div></label>
+  <label class="field"><span>Pengamat · Observer</span><div class="line"></div></label>
+</div>
+<h3>Tingkat <span class="en">Tier</span></h3>
+<div class="boxes"><span class="cb">Penjelajah 6–9 · Explorer</span><span class="cb">Detektif 10–13 · Detective</span><span class="cb">Ahli Strategi 14–17 · Strategist</span></div>
+<h3>Perangkat <span class="en">Device</span></h3>
+<div class="boxes"><span class="cb">HP · Phone</span><span class="cb">Tablet</span><span class="cb">Laptop</span><span class="cb">Bahasa ID</span><span class="cb">Language EN</span><span class="cb">Suara nyala · Sound on</span></div>
+<div class="card"><span class="cb">Orang tua sudah setuju anaknya ikut uji main dan diamati. Tidak ada foto atau rekaman tanpa izin.<span class="en">A parent agreed to the child taking part and being observed. No photos or recordings without permission.</span></span>
+<div class="grid" style="margin-top:8px"><label class="field"><span>Nama orang tua · Parent name</span><div class="line"></div></label><label class="field"><span>Paraf · Initials</span><div class="line"></div></label></div></div>
+
+<h2>2. Rencana sesi (±30 menit) <span class="en">Session plan (about 30 minutes)</span></h2>
+<div class="timing">
+  <b>5 menit</b><p>Persiapan: buka prototipe, tekan <b>Untuk orang tua → Pemain baru</b>, pastikan bahasa dan suara benar. Bilang ke anak: "Ini permainan baru, kami ingin tahu bagian mana yang seru dan mana yang membingungkan. Tidak ada jawaban salah."<span class="en">Setup: open the prototype, tap Parent view → New player, check language and sound. Tell the child: "This is a new game; we want to know what's fun and what's confusing. There are no wrong answers."</span></p>
+  <b>±20 menit</b><p>Main bebas tanpa dibantu. Mulai dari kasus sesuai usia (lihat di bawah), lalu biarkan anak memilih.<span class="en">Free play without help. Start with the case for their age (below), then let the child choose.</span></p>
+  <b>5 menit</b><p>Pertanyaan penutup untuk anak, lalu untuk orang tua (bagian 5).<span class="en">Closing questions for the child, then the parent (section 5).</span></p>
+</div>
+<h3>Kasus sesuai usia <span class="en">Which case for which age</span></h3>
+<ul>
+  <li><b>6–9 · Penjelajah:</b> Pulau Pola, kasus "Siapa yang Menggigit Kue?" lalu Bangun "Perahu Pulang".<span class="en">Explorer: Pattern Isle case, then the Boat Home build puzzle.</span></li>
+  <li><b>10–13 · Detektif:</b> Pulau Mercusuar (kasus #07) lalu kasus pasar "Toples Donasi yang Lenyap" (#08).<span class="en">Detective: Lighthouse Isle case #07, then the market case #08.</span></li>
+  <li><b>14–17 · Ahli Strategi:</b> Pelabuhan Berita, "Foto Pantai yang Viral" (#09).<span class="en">Strategist: News Port case #09.</span></li>
+</ul>
+
+<h2>3. Aturan pengamat <span class="en">Rules for observers</span></h2>
+<ol>
+  <li>Jangan membantu atau menunjuk layar. Bantu hanya kalau anak macet <b>lebih dari 2 menit</b>, dan catat bahwa kamu membantu.<span class="en">Don't help or point at the screen. Help only if the child is stuck for more than 2 minutes, and note that you helped.</span></li>
+  <li>Tulis <b>kata-kata anak persis</b> seperti diucapkan, dalam tanda kutip.<span class="en">Write the child's exact words, in quotes.</span></li>
+  <li>Kalau anak bertanya, balik bertanya: "Menurutmu bagaimana?"<span class="en">If the child asks a question, ask back: "What do you think?"</span></li>
+  <li>Catat waktu macet dengan jam di HP. Perhatikan wajah dan tubuh: senyum, bosan, gelisah.<span class="en">Time stuck moments with a phone clock. Watch the face and body: smiling, bored, restless.</span></li>
+  <li>Jangan memuji atau mengoreksi jawaban selama main. Ucapkan terima kasih di akhir.<span class="en">Don't praise or correct answers during play. Say thank you at the end.</span></li>
+</ol>
+
+<h2>4. Catatan per layar <span class="en">Notes per screen</span></h2>
+<p>Centang yang terjadi, tulis catatan singkat.<span class="en">Tick what happened and add short notes.</span></p>
+<div class="tbl"><table>
+<thead><tr>
+  <th>Layar<span class="en">Screen</span></th>
+  <th>Macet di mana / berapa lama<span class="en">Stuck where / how long</span></th>
+  <th>Minta bantuan<span class="en">Asked for help</span></th>
+  <th>Menyerah<span class="en">Gave up</span></th>
+  <th>Senyum / "wah!"<span class="en">Smiled / "wow"</span></th>
+  <th>Baca keras<span class="en">Read aloud</span></th>
+  <th>Pakai tombol dengar<span class="en">Used listen button</span></th>
+  <th>Catatan &amp; kata-kata anak<span class="en">Notes &amp; child's words</span></th>
+</tr></thead>
+<tbody>
+  <tr><td>Peta &amp; pilih detektif<span class="en">Map &amp; pick detective</span></td><td class="write"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="write"></td></tr>
+  <tr><td>Kasus 1<span class="en">Case 1</span>: ____________</td><td class="write"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="write"></td></tr>
+  <tr><td>Kasus 2<span class="en">Case 2</span>: ____________</td><td class="write"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="write"></td></tr>
+  <tr><td>Bangun<span class="en">Build</span>: ____________</td><td class="write"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="write"></td></tr>
+  <tr><td>Teka-teki harian<span class="en">Daily puzzle</span></td><td class="write"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="write"></td></tr>
+  <tr><td>Hewan &amp; suara<span class="en">Animals &amp; voices</span></td><td class="write"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="write"></td></tr>
+  <tr><td>Lainnya<span class="en">Other</span>: ____________</td><td class="write"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="tick"></td><td class="write"></td></tr>
+</tbody></table></div>
+
+<h2>5. Pertanyaan penutup <span class="en">Closing questions</span></h2>
+<h3>Untuk anak <span class="en">For the child</span></h3>
+<ol class="q">
+  <li>Bagian mana yang paling seru?<span class="en">Which part was the most fun?</span><div class="line"></div></li>
+  <li>Bagian mana yang paling susah atau membingungkan?<span class="en">Which part was the hardest or most confusing?</span><div class="line"></div></li>
+  <li>Siapa tokoh atau hewan favoritmu? Kenapa?<span class="en">Who is your favourite character or animal? Why?</span><div class="line"></div></li>
+  <li>Mau main lagi besok? (Ya / Mungkin / Tidak)<span class="en">Would you play again tomorrow? (Yes / Maybe / No)</span><div class="line"></div></li>
+</ol>
+<h3>Untuk orang tua <span class="en">For the parent</span></h3>
+<ol class="q">
+  <li>Apakah Ibu/Bapak mau membayar supaya anak bisa main permainan seperti ini?<span class="en">Would you pay for your child to play a game like this?</span><div class="boxes"><span class="cb">Ya · Yes</span><span class="cb">Mungkin · Maybe</span><span class="cb">Tidak · No</span></div><div class="line"></div></li>
+  <li>Berapa harga yang wajar menurut Ibu/Bapak?<span class="en">What price feels fair to you?</span><div class="boxes"><span class="cb">&lt; Rp 30.000/bulan</span><span class="cb">Rp 30–60 rb/bulan</span><span class="cb">&gt; Rp 60.000/bulan</span></div><div class="line"></div></li>
+  <li>Lebih suka bayar bulanan atau tahunan? Kenapa?<span class="en">Would you rather pay monthly or yearly? Why?</span><div class="boxes"><span class="cb">Bulanan · Monthly</span><span class="cb">Tahunan · Yearly</span></div><div class="line"></div></li>
+</ol>
+
+<h2>6. Ringkasan <span class="en">Summary</span></h2>
+<div class="card summary">
+  <h3>3 masalah terbesar <span class="en">Top 3 problems</span></h3>
+  <ol><li><div class="line"></div></li><li><div class="line"></div></li><li><div class="line"></div></li></ol>
+  <h3>Yang paling disukai <span class="en">What they liked most</span></h3>
+  <div class="line"></div>
+  <div class="grid" style="margin-top:10px">
+    <label class="field"><span>Lama main · Minutes played</span><div class="line"></div></label>
+    <label class="field"><span>Dibantu berapa kali · Times helped</span><div class="line"></div></label>
+    <label class="field"><span>Kasus selesai sendiri · Cases finished alone</span><div class="line"></div></label>
+  </div>
+</div>
+</div>
+</body>
+</html>
