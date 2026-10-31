@@ -1,0 +1,30 @@
+const { chromium } = require('playwright');
+(async () => {
+  const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1100, height: 900 } });
+  await p.addInitScript(() => { const o = window.scrollTo.bind(window); window.scrollTo = () => o(0, 0); window.__played = []; HTMLMediaElement.prototype.play = function () { window.__played.push(Object.entries(SND).find(([k, v]) => v === this.src)?.[0] || '?'); return Promise.resolve(); }; });
+  const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
+  await p.goto('file://' + require('path').resolve(__dirname, '../index.html')); await p.waitForTimeout(1000);
+  await p.click('[data-case="detective2"]'); await p.waitForTimeout(500);
+  await p.screenshot({ path: 'c2-brief.png', fullPage: true });
+  await p.click('[data-action="c2-step"][data-v="1"]');
+  for (const k of ['joko', 'darto', 'putri', 'ticket', 'photo', 'umbrella', 'stamp', 'coin']) await p.click(`[data-action="c2-see"][data-v="${k}"]`);
+  await p.screenshot({ path: 'c2-inv.png', fullPage: true });
+  await p.click('[data-action="c2-step"][data-v="2"]');
+  await p.click('[data-action="c2-tl"][data-v="2"]'); // wrong
+  await p.click('[data-action="c2-tl"][data-v="0"]'); await p.click('[data-action="c2-tl"][data-v="1"]');
+  await p.screenshot({ path: 'c2-tl.png', fullPage: true });
+  await p.click('[data-action="c2-tl"][data-v="2"]'); await p.click('[data-action="c2-tl"][data-v="3"]'); await p.click('[data-action="c2-tl"][data-v="4"]');
+  await p.click('[data-action="c2-step"][data-v="3"]');
+  await p.click('[data-action="c2-sus"][data-v="joko"]'); await p.click('[data-action="c2-accuse"]');
+  console.log('fb joko:', await p.evaluate(() => st.det2.fb));
+  await p.click('[data-action="c2-sus"][data-v="darto"]'); await p.click('[data-action="c2-ev"][data-v="coin"]'); await p.click('[data-action="c2-accuse"]');
+  console.log('fb weak:', await p.evaluate(() => st.det2.fb));
+  await p.click('[data-action="c2-ev"][data-v="ticket"]'); await p.click('[data-action="c2-ev"][data-v="photo"]'); await p.click('[data-action="c2-accuse"]');
+  await p.click('[data-action="c2-why"][data-v="1"]'); await p.click('[data-action="c2-why"][data-v="0"]'); await p.waitForTimeout(700);
+  await p.screenshot({ path: 'c2-result.png', fullPage: true });
+  console.log('solved:', await p.evaluate(() => st.solved.detective2), 'step', await p.evaluate(() => st.det2.step));
+  await p.click('.back'); await p.click('#parentBtn'); console.log('parent prompt:', (await p.textContent('.prompt')).trim().slice(0, 80));
+  await p.click('#lang-id'); await p.click('.back'); await p.click('[data-case="detective2"]'); console.log('ID title:', await p.textContent('.stage h2'));
+  console.log('played:', (await p.evaluate(() => window.__played)).join(' '));
+  console.log('errors', errs); await b.close();
+})();
