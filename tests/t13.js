@@ -1,3 +1,4 @@
+require('./_setup');
 const { chromium } = require('playwright');
 async function run(voices, lang) {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1100, height: 900 } });

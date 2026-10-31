@@ -1,3 +1,4 @@
+require('./_setup');
 const { chromium } = require('playwright');
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1000, height: 900 } });
@@ -22,6 +23,7 @@ const { chromium } = require('playwright');
   console.log('explorer built:', await p.evaluate(() => st.built.explorer));
   // Lighthouse levels
   await p.click('.back'); await p.click('[data-case="b-detective"]');
+  await p.evaluate(() => document.querySelector('details.mission')?.removeAttribute('open')); await p.waitForTimeout(100);
   const sol = [{A:'or'},{A:'and'},{U:'not',A:'and'},{A:'or',U:'not',B:'and'},{A:'xor'}];
   for (let i = 0; i < 5; i++) {
     for (const [slot, g] of Object.entries(sol[i])) {

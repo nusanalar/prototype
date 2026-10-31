@@ -1,3 +1,4 @@
+require('./_setup');
 const { chromium } = require('playwright');
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1000, height: 900 } });
