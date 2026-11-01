@@ -268,6 +268,18 @@ p { margin: 0; }
 .fb b { font-family: var(--display); }
 
 .answers { display: grid; gap: 10px; }
+.m-facts { list-style: none; padding: 0; margin: 0 0 4px; display: grid; gap: 6px; }
+.m-facts li { background: var(--card-2); border-radius: var(--r); padding: 10px 14px; border-left: 4px solid var(--lantern); }
+.m-opts { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+.m-opts .ans { text-align: center; font-weight: 600; }
+.m-opts .ans:disabled { cursor: default; }
+.m-hours { list-style: none; padding: 0; margin: 4px 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+.m-hours li { position: relative; text-align: center; padding: 8px 2px 6px; border-radius: 10px; font-size: .8rem; color: var(--muted); }
+.m-hours li.bake { background: color-mix(in srgb, var(--lantern) 16%, transparent); color: inherit; }
+.m-hours li.dark { outline: 2px solid var(--coral); }
+.m-hours b { display: block; }
+.m-hours .tray svg { width: 22px; height: 22px; }
+.m-dark { display: block; font-size: .68rem; color: var(--coral); font-weight: 600; }
 .ans { text-align: left; background: var(--card-2); border: 2px solid transparent; border-radius: var(--r); padding: 12px 14px; cursor: pointer; }
 .ans:hover { border-color: var(--line); }
 .ans.right { border-color: var(--palm); }
@@ -909,10 +921,24 @@ const T = {
       clue: {
         boots: { n: "Muddy boot prints", s: "Big rubber boots with a fish-scale pattern on the sole, the kind fishermen wear. They go up the stairs." },
         net: { n: "Blue threads", s: "Blue fishing-net threads caught on the stair railing." },
-        log: { n: "Night-watch log", s: "\"11:00 pm: lighthouse went dark.\" Written by the harbor guard." }
+        log: { n: "Night-watch log", s: "\"11:00 pm: lighthouse went dark.\" Written by the harbor guard." },
+        bread: { n: "Bu Sari's baking list", s: "\"Started at 8 pm. 5 trays of bread, one after another. Each tray bakes for 1 hour.\"" }
       },
+      steps: ["Brief", "Investigate", "Number check", "Accuse", "Explain", "Solved"],
+      mT: "Number check", mS: "Bu Sari says nobody was at the harbor all night. But was she really at her window when the lamp went dark? Use the numbers.",
+      mFacts: ["Bu Sari started baking at 8 pm.", "She baked 5 trays, one after another. Each tray takes 1 hour.", "The lamp went dark at 11 pm."],
+      mQ: "Until what time was Bu Sari baking by her window?",
+      mOpts: [
+        { t: "11 pm", f: "Count again: start at 8 pm and add 1 hour for each tray. That's 5 hours, not 3." },
+        { t: "12 midnight", f: "Close! Count each tray: 9, 10, 11, 12… that's only 4 trays. One more." },
+        { t: "1 am", ok: true },
+        { t: "5 am", f: "That's 5 o'clock, not 5 hours. Start at 8 pm and count 5 hours on." }
+      ],
+      mHours: ["8 pm", "9", "10", "11", "12", "1 am"], mDark: "lamp dark",
+      mDone: "8 pm + 5 hours = 1 am. Bu Sari was at her window from 8 pm to 1 am, so she was watching the harbor at 11 pm. Her words are strong evidence.",
+      mNext: "Make your accusation",
       accT: "Make your accusation", q1: "Who took the lamp?", q2: "Which clues prove it? Pick the strongest ones.", accuse: "Accuse",
-      ev: { boots: "Boot prints", net: "Blue net threads", log: "Lamp went dark at 11", sari: "Bu Sari: harbor was empty", dika: "Dika lost a key", bayu: "Pak Bayu's alibi" },
+      ev: { boots: "Boot prints", net: "Blue net threads", log: "Lamp went dark at 11", bread: "Bu Sari baked 8 pm to 1 am", sari: "Bu Sari: harbor was empty", dika: "Dika lost a key", bayu: "Pak Bayu's alibi" },
       fbNone: "Pick a suspect first.",
       fbDika: "Dika lost a key. That makes it possible, not proven. Which clues point to one specific person?",
       fbSari: "Bu Sari's story fits the clues, and she has nothing to hide. Look again at what was left on the stairs.",
@@ -920,14 +946,14 @@ const T = {
       fbGood: "Strong case. The clues all point the same way.",
       whyT: "Explain your thinking", whyQ: "Why are you sure it was Pak Bayu?",
       why: [
-        { t: "A witness says the harbor was empty, so his alibi isn't true. And the boot prints and net threads match a fisherman.", ok: true },
+        { t: "Bu Sari was at her window from 8 pm to 1 am and saw nobody at the harbor, so his alibi isn't true. And the boot prints and net threads match a fisherman.", ok: true },
         { t: "He just looks suspicious.", f: "Feelings aren't evidence. What did you actually find?" },
         { t: "Because he's the first person I talked to.", f: "The order you met people doesn't prove anything. Which clues connect to him?" }
       ],
       resT: "The lamp is back",
       story: "Pak Bayu lowers his head. \"You're right. My son's boat was still at sea in the storm. I found Dika's key and took the lamp to the cliff so he could see his way home. I should have asked first.\" His son is safe, and the lamp is back. But the storm also broke the lighthouse's control box.",
       lesson: "Detective lesson: finding WHO is half the case. Asking WHY people act helps you understand them.",
-      badge: "Evidence Finder", gain: "+ Deduction   + Evidence   + Explaining why"
+      badge: "Evidence Finder", gain: "+ Deduction   + Evidence   + Numbers   + Explaining why"
     },
     d2: {
       kicker: "Case file #08 · Harbor Town, Lighthouse Isle", title: "The Vanishing Donation Jar", tags: "Timeline · Alibis",
@@ -1215,10 +1241,24 @@ const T = {
       clue: {
         boots: { n: "Jejak sepatu berlumpur", s: "Sepatu bot karet besar dengan pola sisik ikan di solnya, seperti yang dipakai nelayan. Jejaknya naik ke tangga." },
         net: { n: "Benang biru", s: "Benang jala biru tersangkut di pegangan tangga." },
-        log: { n: "Catatan jaga malam", s: "\"Pukul 23.00: mercusuar padam.\" Ditulis oleh penjaga pelabuhan." }
+        log: { n: "Catatan jaga malam", s: "\"Pukul 23.00: mercusuar padam.\" Ditulis oleh penjaga pelabuhan." },
+        bread: { n: "Daftar panggang Bu Sari", s: "\"Mulai jam 8 malam. 5 loyang roti, satu per satu. Setiap loyang dipanggang 1 jam.\"" }
       },
+      steps: ["Briefing", "Selidiki", "Cek angka", "Tuduh", "Jelaskan", "Selesai"],
+      mT: "Cek angka", mS: "Bu Sari bilang semalaman tidak ada orang di pelabuhan. Tapi apakah dia benar-benar di dekat jendela saat lampu padam? Pakai angkanya.",
+      mFacts: ["Bu Sari mulai memanggang jam 8 malam.", "Dia memanggang 5 loyang, satu per satu. Setiap loyang butuh 1 jam.", "Lampu padam jam 11 malam."],
+      mQ: "Sampai jam berapa Bu Sari memanggang di dekat jendela?",
+      mOpts: [
+        { t: "Jam 11 malam", f: "Hitung lagi: mulai dari jam 8 malam, tambah 1 jam untuk setiap loyang. Itu 5 jam, bukan 3." },
+        { t: "Jam 12 tengah malam", f: "Hampir! Hitung setiap loyang: 9, 10, 11, 12… baru 4 loyang. Satu lagi." },
+        { t: "Jam 1 dini hari", ok: true },
+        { t: "Jam 5 pagi", f: "Itu jam 5, bukan 5 jam. Mulai dari jam 8 malam lalu hitung 5 jam ke depan." }
+      ],
+      mHours: ["20.00", "21", "22", "23", "24", "01.00"], mDark: "lampu padam",
+      mDone: "Jam 8 malam + 5 jam = jam 1 dini hari. Bu Sari di dekat jendela dari jam 8 malam sampai jam 1, jadi dia melihat pelabuhan jam 11 malam. Kata-katanya bukti yang kuat.",
+      mNext: "Ajukan tuduhanmu",
       accT: "Ajukan tuduhanmu", q1: "Siapa yang mengambil lampu?", q2: "Petunjuk mana yang membuktikannya? Pilih yang paling kuat.", accuse: "Tuduh",
-      ev: { boots: "Jejak sepatu bot", net: "Benang jala biru", log: "Lampu padam jam 11", sari: "Bu Sari: pelabuhan kosong", dika: "Dika kehilangan kunci", bayu: "Alibi Pak Bayu" },
+      ev: { boots: "Jejak sepatu bot", net: "Benang jala biru", log: "Lampu padam jam 11", bread: "Bu Sari memanggang jam 8 malam–1 dini hari", sari: "Bu Sari: pelabuhan kosong", dika: "Dika kehilangan kunci", bayu: "Alibi Pak Bayu" },
       fbNone: "Pilih tersangka dulu.",
       fbDika: "Dika kehilangan kunci. Itu membuatnya mungkin, tapi belum terbukti. Petunjuk mana yang mengarah ke satu orang tertentu?",
       fbSari: "Cerita Bu Sari cocok dengan petunjuk, dan dia tidak menyembunyikan apa pun. Lihat lagi apa yang tertinggal di tangga.",
@@ -1226,14 +1266,14 @@ const T = {
       fbGood: "Kasusmu kuat. Semua petunjuk mengarah ke orang yang sama.",
       whyT: "Jelaskan alasanmu", whyQ: "Kenapa kamu yakin pelakunya Pak Bayu?",
       why: [
-        { t: "Saksi bilang pelabuhan kosong, jadi alibinya tidak benar. Jejak sepatu bot dan benang jala juga cocok dengan nelayan.", ok: true },
+        { t: "Bu Sari di dekat jendela dari jam 8 malam sampai jam 1 dan tidak melihat siapa pun di pelabuhan, jadi alibinya tidak benar. Jejak sepatu bot dan benang jala juga cocok dengan nelayan.", ok: true },
         { t: "Dia kelihatan mencurigakan.", f: "Perasaan bukan bukti. Apa yang benar-benar kamu temukan?" },
         { t: "Karena dia orang pertama yang aku ajak bicara.", f: "Urutan bertemu orang tidak membuktikan apa pun. Petunjuk mana yang berhubungan dengannya?" }
       ],
       resT: "Lampunya kembali",
       story: "Pak Bayu menunduk. \"Kamu benar. Perahu anakku masih di laut saat badai. Aku menemukan kunci Dika dan membawa lampu ke tebing supaya anakku bisa melihat jalan pulang. Seharusnya aku minta izin dulu.\" Anaknya selamat, dan lampunya sudah kembali. Tapi badai juga merusak kotak kendali mercusuar.",
       lesson: "Pelajaran detektif: menemukan SIAPA baru setengah kasus. Bertanya KENAPA orang bertindak membantumu memahami mereka.",
-      badge: "Pencari Bukti", gain: "+ Deduksi   + Bukti   + Menjelaskan alasan"
+      badge: "Pencari Bukti", gain: "+ Deduksi   + Bukti   + Angka   + Menjelaskan alasan"
     },
     d2: {
       kicker: "Berkas kasus #08 · Kota Pelabuhan, Pulau Mercusuar", title: "Toples Donasi yang Lenyap", tags: "Garis waktu · Alibi",
@@ -1499,7 +1539,7 @@ const GATES = { bin: ["and", "or", "xor"], un: ["not", "buf"] };
 const firstVals = lv => ({ [Object.keys(lv.ins)[0]]: true });
 
 const fresh = () => ({
-  det: { step: 0, seen: [], suspect: null, ev: [], fb: null, why: null },
+  det: { step: 0, seen: [], suspect: null, ev: [], fb: null, why: null, m: null },
   det2: { step: 0, seen: [], order: [], tlfb: null, suspect: null, ev: [], fb: null, why: null },
   str2: { step: 0, seen: [], rated: {}, rfb: null, dec: null, why: null },
   exp2: { step: 0, seen: [], match: null, who: null, why: null },
@@ -1599,7 +1639,8 @@ const lanterns = n => `<div class="lanterns">${"<i></i>".repeat(n)}</div>`;
 const clueIcon = k => ({
   boots: `<svg viewBox="0 0 26 26" aria-hidden="true"><path d="M7 3h6v11l7 3v4H6z" fill="#4a5b6b"/><path d="M6 21h14v2H6z" fill="#2b3a48"/></svg>`,
   net: `<svg viewBox="0 0 26 26" aria-hidden="true"><path d="M3 5 L23 21 M3 13 L15 23 M11 3 L23 13 M23 5 L3 21 M23 13 L11 23 M15 3 L3 13" stroke="#3a7bd5" stroke-width="2" fill="none"/></svg>`,
-  log: `<svg viewBox="0 0 26 26" aria-hidden="true"><rect x="5" y="3" width="16" height="20" rx="2" fill="#fff8e6" stroke="#8a6d3b"/><path d="M8 8h10M8 12h10M8 16h6" stroke="#8a6d3b" stroke-width="1.5"/></svg>`
+  log: `<svg viewBox="0 0 26 26" aria-hidden="true"><rect x="5" y="3" width="16" height="20" rx="2" fill="#fff8e6" stroke="#8a6d3b"/><path d="M8 8h10M8 12h10M8 16h6" stroke="#8a6d3b" stroke-width="1.5"/></svg>`,
+  bread: `<svg viewBox="0 0 26 26" aria-hidden="true"><rect x="3" y="17" width="20" height="4" rx="1.5" fill="#8a6d3b"/><path d="M5 17c0-6 3-9 8-9s8 3 8 9z" fill="#e0a95f"/><path d="M9 12l1.5 2.5M13 11l1.5 2.5M17 12l1 2" stroke="#b07a3a" stroke-width="1.4" stroke-linecap="round"/></svg>`
 })[k];
 const ROCK = `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 30 L12 14 L20 9 L30 13 L35 30 Z" fill="#5d6b78"/><path d="M12 14 L20 9 L22 20 Z" fill="#7a8896"/></svg>`;
 const DOCK = `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="22" width="32" height="6" fill="#a0784f"/><rect x="8" y="28" width="3" height="8" fill="#6b4f35"/><rect x="29" y="28" width="3" height="8" fill="#6b4f35"/><rect x="16" y="6" width="3" height="16" fill="#e8d2a2"/><polygon points="19,6 30,10 19,14" fill="#ffc857"/></svg>`;
@@ -1769,7 +1810,7 @@ const stage = inner => `<section class="stage"><button class="back" data-action=
 /* ---------- SOLVE ---------- */
 function renderDetective() {
   const l = L(), d = l.d, s = st.det;
-  const steps = `<ol class="steps">${l.steps.map((t, i) => `<li class="${i < s.step ? "done" : i === s.step ? "now" : ""}">${i + 1}. ${t}</li>`).join("")}</ol>`;
+  const steps = `<ol class="steps">${d.steps.map((t, i) => `<li class="${i < s.step ? "done" : i === s.step ? "now" : ""}">${i + 1}. ${t}</li>`).join("")}</ol>`;
   let body = "";
   if (s.step === 0) {
     body = `<div class="head"><span class="kicker">${d.kicker}</span><h2>${l.title.detective}</h2><p class="sub">${d.body}</p></div>
@@ -1789,12 +1830,21 @@ function renderDetective() {
     body = `<div class="head"><h2>${d.invT}</h2><p class="sub">${d.invS}</p></div>
       <div class="inv">
         <div class="col"><span class="col-t">${d.people}</span>${["bayu", "sari", "dika"].map(person).join("")}
-          <span class="col-t" style="margin-top:6px">${d.clues}</span>${["boots", "net", "log"].map(clue).join("")}</div>
+          <span class="col-t" style="margin-top:6px">${d.clues}</span>${["boots", "net", "log", "bread"].map(clue).join("")}</div>
         <div class="notebook"><h3>${d.nb}</h3>${s.seen.length ? `<ul>${s.seen.map(nbItem).join("")}</ul>` : `<p class="empty">${d.nbEmpty}</p>`}</div>
       </div>
-      <button class="primary" data-action="d-step" data-v="2" ${need ? "disabled" : ""}>${need ? d.need(need) : d.ready}</button>`;
+      <button class="primary" data-action="d-step" data-v="2" ${need ? "disabled" : ""}>${need ? d.need(need) : d.mT + " →"}</button>`;
   } else if (s.step === 2) {
-    const evKeys = ["boots", "net", "log", "sari", "dika", "bayu"].filter(k => s.seen.includes(k));
+    const done = s.m !== null && d.mOpts[s.m].ok;
+    const hours = `<ol class="m-hours">${d.mHours.map((h, i) => `<li class="${i < 5 ? "bake" : ""} ${i === 3 ? "dark" : ""}"><b>${h}</b>${i < 5 ? `<span class="tray">${clueIcon("bread")}</span>` : ""}${i === 3 ? `<span class="m-dark">${d.mDark}</span>` : ""}</li>`).join("")}</ol>`;
+    body = `<div class="head"><h2>${d.mT}</h2><p class="sub">${d.mS}</p></div>
+      <ul class="m-facts">${d.mFacts.map(f => `<li>${f}</li>`).join("")}</ul>
+      <p class="q">${d.mQ}</p>
+      <div class="answers m-opts">${d.mOpts.map((o, i) => `<button class="ans ${s.m === i ? (o.ok ? "right" : "wrong") : ""}" data-action="d-math" data-v="${i}" ${done ? "disabled" : ""}>${o.t}</button>`).join("")}</div>
+      ${s.m !== null && !d.mOpts[s.m].ok ? fbBox(false, d.mOpts[s.m].f) : ""}
+      ${done ? hours + fbBox(true, d.mDone) + `<button class="primary" data-action="d-step" data-v="3">${d.mNext}</button>` : ""}`;
+  } else if (s.step === 3) {
+    const evKeys = ["boots", "net", "log", "bread", "sari", "dika", "bayu"].filter(k => s.seen.includes(k));
     body = `<div class="head"><h2>${d.accT}</h2></div>
       <p class="q">${d.q1}</p>
       <div class="pick">${["bayu", "sari", "dika"].map(k => `<button class="opt" data-action="d-sus" data-v="${k}" aria-pressed="${s.suspect === k}">
@@ -1803,7 +1853,7 @@ function renderDetective() {
       <div class="evid">${evKeys.map(k => `<button class="ev" data-action="d-ev" data-v="${k}" aria-pressed="${s.ev.includes(k)}">${d.ev[k]}</button>`).join("")}</div>
       ${s.fb ? fbBox(false, d[s.fb]) : ""}
       <button class="primary" data-action="d-accuse">${d.accuse}</button>`;
-  } else if (s.step === 3) {
+  } else if (s.step === 4) {
     body = `${fbBox(true, d.fbGood)}
       <div class="head"><h2>${d.whyT}</h2><p class="q">${d.whyQ}</p></div>
       <div class="answers">${d.why.map((w, i) => `<button class="ans ${s.why === i ? (w.ok ? "right" : "wrong") : ""}" data-action="d-why" data-v="${i}">${w.t}</button>`).join("")}</div>
@@ -2643,7 +2693,7 @@ const GUIDE = {
         uses: ["When I look for something I lost", "When I compare pictures in a book", "When I play outside and spot animal tracks"] },
       "b-explorer": { goal: "Line up arrows, step by step, to guide the boat home around the rocks.", skill: "Planning steps in the right order.", why: "You can follow and give clear directions.",
         uses: ["When I give directions to a friend", "When I follow a recipe or instructions", "When I plan my way to school"] },
-      detective: { goal: "Find out who took the lighthouse lamp. Talk to everyone, collect clues, then point to the person the clues lead to.", skill: "Evidence: deciding from clues, not guesses.", why: "You stay fair and don't blame someone without proof.",
+      detective: { goal: "Find out who took the lighthouse lamp. Talk to everyone, collect clues, check a witness with numbers, then point to the person the clues lead to.", skill: "Evidence: deciding from clues and numbers, not guesses.", why: "You stay fair and don't blame someone without proof.",
         uses: ["When something goes missing at home or school", "When friends argue about who did something", "When I hear a story and want to know if it's true"] },
       detective2: { goal: "Put what everyone did in time order to find when the jar disappeared and who was there.", skill: "Timelines: putting events in order.", why: "You can plan your day and check if a story makes sense.",
         uses: ["When I plan homework and play time", "When someone's story about the day doesn't add up", "When I tell a teacher or parent what happened"] },
@@ -2683,7 +2733,7 @@ const GUIDE = {
         uses: ["Saat mencari barang yang hilang", "Saat membandingkan gambar di buku", "Saat bermain di luar dan melihat jejak hewan"] },
       "b-explorer": { goal: "Susun panah langkah demi langkah untuk memandu perahu pulang melewati batu.", skill: "Merencanakan langkah dengan urutan yang benar.", why: "Kamu bisa mengikuti dan memberi petunjuk arah dengan jelas.",
         uses: ["Saat memberi petunjuk arah ke teman", "Saat mengikuti resep atau petunjuk", "Saat merencanakan jalan ke sekolah"] },
-      detective: { goal: "Cari tahu siapa yang mengambil lampu mercusuar. Ajak bicara semua warga, kumpulkan petunjuk, lalu tunjuk orang yang sesuai dengan petunjuk.", skill: "Bukti: memutuskan dari petunjuk, bukan tebakan.", why: "Kamu bersikap adil dan tidak menuduh tanpa bukti.",
+      detective: { goal: "Cari tahu siapa yang mengambil lampu mercusuar. Ajak bicara semua warga, kumpulkan petunjuk, lalu tunjuk orang yang sesuai dengan petunjuk.", skill: "Bukti: memutuskan dari petunjuk dan angka, bukan tebakan.", why: "Kamu bersikap adil dan tidak menuduh tanpa bukti.",
         uses: ["Saat ada barang hilang di rumah atau sekolah", "Saat teman-teman ribut soal siapa yang melakukan sesuatu", "Saat mendengar cerita dan ingin tahu apakah itu benar"] },
       detective2: { goal: "Susun apa yang dilakukan setiap orang menurut waktu, untuk tahu kapan toples hilang dan siapa yang ada di sana.", skill: "Garis waktu: menyusun kejadian berurutan.", why: "Kamu bisa mengatur harimu dan mengecek apakah sebuah cerita masuk akal.",
         uses: ["Saat mengatur waktu PR dan main", "Saat cerita seseorang tentang harinya tidak cocok", "Saat menceritakan kejadian ke guru atau orang tua"] },
@@ -2945,19 +2995,24 @@ function act(el) {
       if (fresh) sfx("notebook-write", VOICE_P[v] ? 900 : 0);
       return;
     }
+    case "d-math": {
+      d.m = +v;
+      if (L().d.mOpts[+v].ok) { sfx("ui-correct"); sfx("oyen-purr", 700); } else { sfx("ui-wrong"); sfx("oyen-meow", 350); }
+      return render();
+    }
     case "d-sus": d.suspect = v; d.fb = null; return render();
     case "d-ev": d.ev = d.ev.includes(v) ? d.ev.filter(x => x !== v) : [...d.ev, v]; d.fb = null; return render();
     case "d-accuse": {
-      const strong = d.ev.filter(x => ["boots", "net", "sari"].includes(x)).length;
+      const strong = d.ev.filter(x => ["boots", "net", "sari", "bread"].includes(x)).length;
       if (!d.suspect) d.fb = "fbNone";
       else if (d.suspect === "dika") d.fb = "fbDika";
       else if (d.suspect === "sari") d.fb = "fbSari";
       else if (strong < 2) d.fb = "fbWeak";
-      else { d.fb = null; d.step = 3; }
+      else { d.fb = null; d.step = 4; }
       if (d.fb) { sfx("ui-wrong"); sfx("oyen-meow", 350); } else sfx("ui-correct");
       return render();
     }
-    case "d-why": d.why = +v; if (L().d.why[+v].ok) { solve("detective"); d.step = 4; sfx("badge-earned"); sfx("oyen-purr", 900); } else { sfx("ui-wrong"); sfx("oyen-meow", 350); } return render();
+    case "d-why": d.why = +v; if (L().d.why[+v].ok) { solve("detective"); d.step = 5; sfx("badge-earned"); sfx("oyen-purr", 900); } else { sfx("ui-wrong"); sfx("oyen-meow", 350); } return render();
     case "e-pick": if (v === "tri") { e.step = "why"; e.fb = null; sfx("ui-correct"); } else { e.fb = true; sfx("ui-wrong"); sfx("kepi-snap", 350); } return render();
     case "e-why": e.why = +v; sfx(L().e.why[+v].ok ? "ui-correct" : "ui-wrong"); return render();
     case "e-step": e.step = v; e.fb = null; return render();

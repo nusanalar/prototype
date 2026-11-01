@@ -12,7 +12,7 @@ const { chromium } = require('playwright');
   await p.click('[data-case="detective"]'); await p.click('[data-action="d-step"][data-v="1"]');
   for (const k of ['bayu', 'sari', 'dika', 'boots', 'net']) await p.click(`[data-action="d-see"][data-v="${k}"]`);
   await p.screenshot({ path: 'proto-inv.png', fullPage: true });
-  await p.click('[data-action="d-step"][data-v="2"]'); await p.click('[data-action="d-sus"][data-v="dika"]'); await p.click('[data-action="d-accuse"]');
+  await p.click('[data-action="d-step"][data-v="2"]'); await p.click('[data-action="d-math"][data-v="2"]'); await p.click('[data-action="d-step"][data-v="3"]'); await p.click('[data-action="d-sus"][data-v="dika"]'); await p.click('[data-action="d-accuse"]');
   await p.screenshot({ path: 'proto-hint.png', fullPage: true });
   await p.click('[data-action="d-sus"][data-v="bayu"]'); await p.click('[data-action="d-ev"][data-v="boots"]'); await p.click('[data-action="d-ev"][data-v="net"]'); await p.click('[data-action="d-accuse"]');
   await p.click('[data-action="d-why"][data-v="0"]'); await p.waitForTimeout(1000);
