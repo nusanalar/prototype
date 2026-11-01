@@ -1,9 +1,9 @@
-"""Put the recorded Indonesian voice lines into the prototype. Safe to run again after vox.py."""
+"""Put the recorded Indonesian voice lines into the prototype. Safe to run again."""
 import json, os, re
 SCRATCH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P = os.path.join(SCRATCH, "mystery-isles.html"); s = open(P).read()
 bundle = json.load(open(os.path.join(SCRATCH, "vox-bundle.json")))
-data = "/* Recorded Indonesian voice lines (Piper AI voice, shaped per character), keyed by character|line */\nconst VOX = " + json.dumps(bundle, ensure_ascii=False) + ";\n"
+data = "/* Recorded Indonesian voice lines, keyed by character|line: paths to MP3s copied from the asset kit by tools/voxsync.py */\nconst VOX = " + json.dumps(bundle, ensure_ascii=False) + ";\n"
 RUNTIME = r'''const voxKey = (who, text) => who + "|" + String(text).replace(/[“”"]/g, "").trim();
 let voxTok = 0, voxNow = null, voxNext = null;
 function stopVox() {

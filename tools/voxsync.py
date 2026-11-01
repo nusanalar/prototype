@@ -37,8 +37,6 @@ for root, _, files in os.walk(os.path.join(HERE, "voices")):
         full = os.path.normpath(os.path.join(root, f))
         if full not in keep:
             os.remove(full); removed += 1
-s = s.replace("/* Recorded Indonesian voice lines (Piper AI voice, shaped per character), keyed by character|line */",
-              "/* Recorded Indonesian voice lines, keyed by character|line: paths to MP3s copied from the asset kit by tools/voxsync.py */")
 open(P, "w", encoding="utf-8").write(s)
 mb = sum(os.path.getsize(os.path.join(r, f)) for r, _, fs in os.walk(os.path.join(HERE, "voices")) for f in fs) / 1e6
 print(f"{removed} old files removed · page {len(s)//1024} KB · voices/ {mb:.1f} MB")
