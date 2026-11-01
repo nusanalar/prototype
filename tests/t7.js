@@ -20,7 +20,7 @@ const { chromium } = require('playwright');
   // lighthouse level 1 + boat
   await p.click('.back'); await p.click('[data-case="b-detective"]'); await p.click('[data-slot="A"]'); await p.click('[data-action="bd-place"][data-v="or"]'); await p.click('[data-action="bd-test"]');
   await p.click('.back'); await p.click('[data-case="b-explorer"]');
-  for (const d of ['right','right','right','right','right','up','up','up']) await p.click(`[data-action="be-add"][data-v="${d}"]`);
+  for (const d of ['right','right','right','right','up','up']) await p.click(`[data-action="be-add"][data-v="${d}"]`);
   await p.click('[data-action="be-run"]'); await p.waitForTimeout(4200);
   await p.click('.back'); await p.click('.daily-card'); await p.waitForTimeout(800);
   await p.click('[data-action="music"]');
