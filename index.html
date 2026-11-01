@@ -299,16 +299,37 @@ p { margin: 0; }
 .gain { font-size: .85rem; color: var(--palm); }
 
 /* Train */
-.train { display: flex; gap: 8px; align-items: flex-end; overflow-x: auto; padding: 8px 2px 14px; }
-.car { flex: 0 0 auto; width: 70px; height: 62px; background: var(--card-2); border: 2px solid var(--line); border-radius: 10px 10px 4px 4px; display: grid; place-items: center; position: relative; }
+.train { display: flex; gap: 6px; align-items: flex-end; padding: 8px 2px 14px; position: relative; }
+.car { flex: 1 1 0; min-width: 0; max-width: 70px; aspect-ratio: 70 / 62; height: auto; background: var(--card-2); border: 2px solid var(--line); border-radius: 10px 10px 4px 4px; display: grid; place-items: center; position: relative; }
 .car::after { content: ""; position: absolute; bottom: -10px; left: 10px; right: 10px; height: 12px; background: radial-gradient(circle 6px at 8px 6px, var(--muted) 98%, transparent), radial-gradient(circle 6px at calc(100% - 8px) 6px, var(--muted) 98%, transparent); }
-.car.engine { width: 84px; background: var(--coral); border-color: var(--coral); }
+.car.engine { max-width: 84px; flex-grow: 1.2; background: var(--coral); border-color: var(--coral); }
 .car.mystery { border-style: dashed; border-color: var(--lantern); color: var(--lantern-t); font-family: var(--display); font-size: 1.6rem; font-weight: 800; }
-.car svg { width: 34px; height: 34px; }
+.car svg { width: min(34px, 62%); height: auto; }
+/* Train payoff: a new train rolls in, a right answer makes it chug, the finished train leaves with a horn */
+.train.arrive > .car { animation: trainIn .6s ease-out both; }
+.train.chug > .car { animation: chug .45s ease-in-out 2; }
+.train.roll { overflow: hidden; }
+.train.roll > .car { animation: trainOut 2s ease-in .5s forwards; }
+.train .toot { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: 800 1.6rem var(--display); color: var(--lantern-t); opacity: 0; animation: tootIn .6s ease-out 2.2s forwards; pointer-events: none; }
+@keyframes trainIn { from { transform: translateX(-60px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes chug { 50% { transform: translateY(-5px); } }
+@keyframes trainOut { 0% { transform: none; } 12% { transform: translateX(-8px); } 100% { transform: translateX(120vw); } }
+@keyframes tootIn { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .train > .car { animation: none !important; } .train.roll > .car { opacity: 0; } .train .toot { animation: none; opacity: 1; } }
+.color-dot { display: block; width: min(34px, 62%); aspect-ratio: 1; border-radius: 50%; border: 2px solid rgba(0, 0, 0, .15); }
 .lanterns { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; max-width: 52px; }
 .lanterns i { width: 10px; height: 10px; border-radius: 50%; background: var(--lantern); }
 .shape-opt { display: flex; gap: 10px; flex-wrap: wrap; }
-.shape-opt .opt { width: 92px; }
+.shape-opt .opt { min-width: 92px; width: auto; }
+.young .shape-opt .opt .o-lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.young .shape-opt .opt { min-width: 76px; min-height: 76px; justify-items: center; place-content: center; }
+.ans .a-ico { display: inline-grid; place-items: center; width: 34px; height: 34px; margin-right: 10px; vertical-align: middle; border-radius: 10px; background: var(--card); font-size: 1.2rem; }
+.ans .a-ico svg { width: 26px; height: 26px; }
+.ans.right { animation: pop .45s ease-out; }
+@keyframes pop { 40% { transform: scale(1.05); } }
+.fb-slot { min-height: 76px; }
+.fb, .prog, .palette, .train, .shape-opt { -webkit-user-select: none; user-select: none; }
+.q-row { display: flex; align-items: center; gap: 8px; }
 .shape-opt svg { width: 38px; height: 38px; }
 
 /* Chat */
@@ -334,9 +355,9 @@ p { margin: 0; }
 .cell svg { width: 78%; height: 78%; }
 .cell .boat { position: absolute; inset: 0; display: grid; place-items: center; }
 .cell.crash { background: color-mix(in srgb, var(--coral) 45%, var(--water)); }
-.prog { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px; min-height: 128px; padding: 8px; background: var(--card-2); border-radius: 12px; border: 2px dashed var(--line); }
-.pblock { display: inline-grid; grid-template-columns: auto 22px; align-items: center; gap: 2px; background: var(--sky); color: #0b2338; border: 0; border-radius: 8px; padding: 4px 6px; cursor: pointer; font-size: .7rem; font-weight: 700; }
-.pblock svg { width: 22px; height: 22px; }
+.prog { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px; min-height: 124px; padding: 8px; background: var(--card-2); border-radius: 12px; border: 2px dashed var(--line); }
+.pblock { display: inline-grid; grid-template-columns: auto 24px; align-items: center; justify-content: center; gap: 2px; min-width: 48px; min-height: 48px; background: var(--sky); color: #0b2338; border: 0; border-radius: 10px; padding: 4px 6px; cursor: pointer; font-size: .78rem; font-weight: 700; }
+.pblock svg { width: 24px; height: 24px; }
 .pblock.cur { outline: 3px solid var(--lantern); }
 .pblock.bad { background: var(--coral); }
 .palette { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -618,6 +639,7 @@ table.tests.goal { min-width: 0; }
 .m-k { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--lantern-t); }
 .m-goal { flex: 1 1 260px; font-weight: 600; }
 .mission:not([open]) .m-goal { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mission { min-width: 0; } .mission summary .m-goal { min-width: 0; flex: 1 1 0; }
 .m-body { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px 16px; margin-top: 8px; align-items: start; }
 .m-l { font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
 .m-body p { margin: 2px 0 0; font-size: .9rem; }
@@ -662,7 +684,7 @@ table.tests.goal { min-width: 0; }
 .onb-ic.b { background: color-mix(in srgb, var(--sky) 30%, transparent); color: var(--sky-t); }
 .onb-foot { margin: 0; display: flex; gap: 8px; align-items: center; color: var(--palm); font-weight: 600; font-size: .92rem; }
 .onb-pets { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
-.onb-pet { display: grid; justify-items: center; gap: 2px; }
+.onb-pet { display: grid; justify-items: center; gap: 2px; background: none; border: 0; padding: 0; cursor: pointer; color: inherit; }
 .onb-pet svg { width: 100%; max-width: 76px; height: auto; }
 .onb-pet small { color: var(--muted); }
 .age-btn { flex: 1 1 120px; display: grid; gap: 2px; justify-items: center; background: var(--card-2); border: 2px solid var(--line); border-radius: 14px; padding: 12px; cursor: pointer; color: var(--ink); }
@@ -674,8 +696,22 @@ table.tests.goal { min-width: 0; }
 .onb-btns .primary:disabled { opacity: .5; cursor: default; }
 .isl.start .sandshape { stroke: var(--lantern); stroke-width: 5; stroke-dasharray: 12 7; animation: startDash 1.4s linear infinite; }
 @keyframes startDash { to { stroke-dashoffset: -38; } }
+/* Islands above the child's age band: dimmed with a lock until a grown-up opens them */
+.isl.locked > :not(.lock-g):not(.lbl):not(.lbl-sub) { filter: grayscale(.75) brightness(.85); }
+.lock-g rect { fill: var(--card); stroke: var(--muted); stroke-width: 2; } .lock-g path { fill: none; stroke: var(--muted); stroke-width: 3; }
+.chip.lock { background: var(--card-2); color: var(--muted); }
+.ev.locked { opacity: .6; }
+.isl.celebrate .glow { animation: islGlow 1.1s ease-out 3; }
+@keyframes islGlow { 0% { opacity: .1; } 40% { opacity: .55; } 100% { opacity: .14; } }
+#gate .onb-card { grid-template-columns: minmax(0, 1fr); }
+.gate-ask { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 12px; border-radius: 14px; background: var(--card-2); border: 1px solid var(--line); }
+.gate-ask label { font-size: .85rem; color: var(--muted); }
+.gate-ask .row { display: flex; gap: 8px; }
+.gate-ask input { flex: 1 1 0; min-width: 0; width: 100%; font: inherit; font-size: 1.1rem; padding: 10px 12px; border-radius: 10px; border: 2px solid var(--line); background: var(--card); color: var(--ink); }
+.gate-pet { display: flex; justify-content: center; } .gate-pet svg { width: 110px; height: auto; }
+.pwhy li { margin-bottom: 6px; }
 .start-t { font: 800 15px var(--display); fill: #fff3d6; paint-order: stroke; stroke: #7a4a06; stroke-width: 4px; stroke-linejoin: round; }
-@media (prefers-reduced-motion: reduce) { .isl.start .sandshape { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .isl.start .sandshape { animation: none; } .isl.celebrate .glow { animation: none; } }
 </style>
 
 <header class="bar">
@@ -1067,7 +1103,8 @@ const T = {
     e: {
       kicker: "Pattern Isle · Explorer",
       body: "The island train won't move until its cars follow the right pattern. What comes next?",
-      r1: "Which shape goes on the next car?", r2: "How many lanterns go on the next car?",
+      r1: "Which shape goes on the next car?", r2: "How many lanterns go on the next car?", r3: "Which colour goes on the next car?",
+      gotIt: "That's it! The train is waking up.", whyGood: "Great thinking! You spotted what repeats.", toot: "Toot toot!",
       wrong: "Not quite. Look at the cars from the start, one by one.",
       whyQ: "How did you know it was a triangle?",
       why: [
@@ -1387,7 +1424,8 @@ const T = {
     e: {
       kicker: "Pulau Pola · Penjelajah",
       body: "Kereta pulau tidak bisa jalan sampai gerbongnya mengikuti pola yang benar. Apa yang selanjutnya?",
-      r1: "Bentuk apa untuk gerbong berikutnya?", r2: "Berapa lentera di gerbong berikutnya?",
+      r1: "Bentuk apa untuk gerbong berikutnya?", r2: "Berapa lentera di gerbong berikutnya?", r3: "Warna apa untuk gerbong berikutnya?",
+      gotIt: "Betul! Keretanya mulai bangun.", whyGood: "Hebat! Kamu menemukan yang berulang.", toot: "Tuut tuut!",
       wrong: "Belum tepat. Lihat gerbongnya dari awal, satu per satu.",
       whyQ: "Bagaimana kamu tahu jawabannya segitiga?",
       why: [
@@ -1526,7 +1564,7 @@ const T = {
   }
 };
 
-const GRID = ["...R.H", ".R....", ".R.RR.", "B....."];
+const GRID = ["......", ".R..H.", ".R.R..", "B....."];
 const DIRS = { up: [0, -1], right: [1, 0], down: [0, 1], left: [-1, 0] };
 const ROT = { up: 0, right: 90, down: 180, left: 270 };
 
@@ -1564,7 +1602,8 @@ let st = Object.assign({
   if (saved === "en" || saved === "id") st.lang = saved;
   else { const langs = [].concat(navigator.languages || [], navigator.language || []); if (langs.some(x => /^id\b|^in\b/i.test(String(x)))) st.lang = "id"; } }
 st.avatar = "raka"; st.soundOn = true; st.musicOn = false;
-st.learned = {}; st.learnPick = {}; st.missionOpen = {}; st.ageTier = null; st.onb = null;
+st.learned = {}; st.learnPick = {}; st.missionOpen = {}; st.ageTier = null; st.onb = null; st.unlocked = {}; st.gate = null; st.celebrate = null;
+try { st.unlocked = JSON.parse(localStorage.getItem("mi-unlock") || "{}") || {}; } catch (e) {}
 try { st.learned = JSON.parse(localStorage.getItem("mi-learn") || "{}") || {}; const t = localStorage.getItem("mi-age"); if (["explorer", "detective", "strategist"].includes(t)) st.ageTier = t; if (!localStorage.getItem("mi-onboard")) st.onb = 0; } catch (e) { st.onb = 0; }
 try { const a = localStorage.getItem("mi-avatar"); if (a === "raka" || a === "laras") st.avatar = a; if (localStorage.getItem("mi-sound") === "off") st.soundOn = false; } catch (e) {}
 
@@ -1579,9 +1618,18 @@ const VOICE_P = { raka: "voice-raka", laras: "voice-laras", bayu: "voice-pak-bay
 const figure = (k, cls = "") => `<svg class="${cls}" data-slug="${k}" viewBox="0 0 200 ${isPet(k) ? 200 : 280}" aria-hidden="true">${ART[k]}</svg>`;
 const portrait = k => `<svg data-slug="${k}" viewBox="${isPet(k) ? "10 20 180 180" : PORTRAIT[k]}" aria-hidden="true">${ART[k]}</svg>`;
 let lastFb = "", lastHero = "";
+/* Hints and wins must be seen: scroll them into view when they land below (or above) the screen */
+function keepInView(el, block) {
+  if (!el || !el.getBoundingClientRect) return;
+  const r = el.getBoundingClientRect(), bar = document.querySelector(".bar"), top = bar ? bar.getBoundingClientRect().bottom : 0;
+  if (block === "start" ? r.top >= top && r.top <= innerHeight * .6 : r.top >= top && r.bottom <= innerHeight) return;
+  setTimeout(() => { try { el.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block }); } catch (e) {} }, 60);
+}
+const young = () => st.ageTier === "explorer";
 function autoMoves() {
   const fb = document.querySelector(".fb.helper"), key = fb ? fb.textContent : "";
   if (fb && key !== lastFb) {
+    keepInView(fb, "center");
     const h = fb.querySelector("svg[data-slug]"), line = fb.querySelector(".say > span:last-child");
     playMove(h, fb.classList.contains("good") ? "happy" : "no");
     if (h && line) sayAs(h.dataset.slug, line.textContent, h, { tic: true });
@@ -1589,6 +1637,7 @@ function autoMoves() {
   lastFb = key;
   const hero = document.querySelector(".hero-row"), hk = hero ? st.screen + "|" + (st.last || "") : "";
   if (hero && hk !== lastHero) {
+    keepInView(hero.closest(".result") || hero, "start");
     const s = hero.querySelectorAll("svg[data-slug]");
     playMove(s[0], "cheer"); if (s[1]) setTimeout(() => playMove(s[1], "happy"), 200);
     [...s].slice(2).forEach((el, i) => setTimeout(() => playMove(el, el.dataset.mood || "yes"), 400 + i * 250));
@@ -1677,9 +1726,11 @@ function header() {
 }
 
 function mapSVG() {
-  const l = L(), cls = k => `${st.solved[k] ? "on" : ""} ${st.built[k] ? "built" : ""} ${st.ageTier === k ? "start" : ""}`;
-  const label = (k, x, y) => (st.ageTier === k ? `<text class="start-t" x="${x}" y="${y - 24}" text-anchor="middle">★ ${G().startHere}</text>` : "") + `<text class="lbl" x="${x}" y="${y}" text-anchor="middle">${l.isl[k]}</text><text class="lbl-sub" x="${x}" y="${y + 17}" text-anchor="middle">${l.tier[k]}</text>`;
+  const l = L(), mark = markIsland(), cel = st.celebrate;
+  const cls = k => `${st.solved[k] ? "on" : ""} ${st.built[k] ? "built" : ""} ${mark === k ? "start" : ""} ${isLocked(k) ? "locked" : ""} ${cel === k ? "celebrate" : ""}`;
+  const label = (k, x, y) => (mark === k ? `<text class="start-t" x="${x}" y="${y - 24}" text-anchor="middle">★ ${islandStarted(k) ? G().nextHere : G().startHere}</text>` : "") + `<text class="lbl" x="${x}" y="${y}" text-anchor="middle">${l.isl[k]}</text><text class="lbl-sub" x="${x}" y="${y + 17}" text-anchor="middle">${l.tier[k]}</text>`;
   const pin = (x, y, k) => {
+    if (isLocked(k)) return `<g class="lock-g"><path d="M${x - 7} ${y - 2} V${y - 8} A7 7 0 0 1 ${x + 7} ${y - 8} V${y - 2}"/><rect x="${x - 12}" y="${y - 3}" width="24" height="18" rx="4"/></g>`;
     const n = (st.solved[k] ? 1 : 0) + (st.built[k] ? 1 : 0);
     return `<g><circle class="pin ${n === 2 ? "full" : n === 1 ? "half" : ""}" cx="${x}" cy="${y}" r="14"/><text class="pin-t" x="${x}" y="${y + 4}" text-anchor="middle">${n}/2</text></g>`;
   };
@@ -1742,8 +1793,13 @@ function mapSVG() {
 
 function renderMap() {
   const l = L();
+  if (st.celebrate) { const c = st.celebrate; st.celebrate = null; sfx("lamp-on", 400); setTimeout(() => { const i = document.querySelector(`.isl[data-case="${c}"]`); if (i) i.classList.remove("celebrate"); }, 3500); }
   const act = (k, mode) => {
     const done = mode === "s" ? st.solved[k] : st.built[k];
+    if (isLocked(k)) return `<button class="act" data-action="open" data-case="${mode === "s" ? k : "b-" + k}">
+      <span class="ico ${mode}">${mode === "s" ? ICON.solve : ICON.build}</span>
+      <span><span class="mode">${mode === "s" ? l.solveL : l.buildL}</span><span class="nm">${mode === "s" ? l.title[k] : l.bTitle[k]}</span></span>
+      <span class="chip lock">🔒 ${G().gate.locked(l.tier[k])}</span></button>`;
     return `<button class="act" data-action="open" data-case="${mode === "s" ? k : "b-" + k}">
       <span class="ico ${mode}">${mode === "s" ? ICON.solve : ICON.build}</span>
       <span><span class="mode">${mode === "s" ? l.solveL : l.buildL}</span><span class="nm">${mode === "s" ? l.title[k] : l.bTitle[k]}</span><span class="tg">${mode === "s" ? l.tags[k] : l.bTags[k]}</span></span>
@@ -1770,28 +1826,29 @@ function renderMap() {
 }
 
 function case2Row() {
-  const l = L(), done = !!st.solved.detective2;
+  const l = L(), done = !!st.solved.detective2, lk = isLocked("detective2");
   return `<button class="act" data-action="open" data-case="detective2">
     <span class="ico s">${ICON.solve}</span>
     <span><span class="mode">${l.solveL} · #08</span><span class="nm">${l.d2.title}</span><span class="tg">${l.d2.tags}</span></span>
-    <span class="chip ${done ? "ok" : ""}">${done ? l.solved : l.isNew}</span></button>`;
+    <span class="chip ${lk ? "lock" : done ? "ok" : ""}">${lk ? "🔒" : done ? l.solved : l.isNew}</span></button>`;
 }
 function case10Row() {
-  const l = L(), done = !!st.solved.explorer2;
+  const l = L(), done = !!st.solved.explorer2, lk = isLocked("explorer2");
   return `<button class="act" data-action="open" data-case="explorer2">
     <span class="ico s">${ICON.solve}</span>
     <span><span class="mode">${l.solveL} · #10</span><span class="nm">${l.e2.title}</span><span class="tg">${l.e2.tags}</span></span>
-    <span class="chip ${done ? "ok" : ""}">${done ? l.solved : l.isNew}</span></button>`;
+    <span class="chip ${lk ? "lock" : done ? "ok" : ""}">${lk ? "🔒" : done ? l.solved : l.isNew}</span></button>`;
 }
 function case9Row() {
-  const l = L(), done = !!st.solved.strategist2;
+  const l = L(), done = !!st.solved.strategist2, lk = isLocked("strategist2");
   return `<button class="act" data-action="open" data-case="strategist2">
     <span class="ico s">${ICON.solve}</span>
     <span><span class="mode">${l.solveL} · #09</span><span class="nm">${l.s2.title}</span><span class="tg">${l.s2.tags}</span></span>
-    <span class="chip ${done ? "ok" : ""}">${done ? l.solved : l.isNew}</span></button>`;
+    <span class="chip ${lk ? "lock" : done ? "ok" : ""}">${lk ? "🔒" : done ? l.solved : l.isNew}</span></button>`;
 }
 const fbBox = (good, text) => {
-  const h = HELPER[st.screen];
+  const h = HELPER[st.screen], lead = good ? L().correct : L().notQuite;
+  text = String(text || ""); if (text.startsWith(lead)) text = text.slice(lead.length).trim();
   if (!h) return `<div class="fb ${good ? "good" : "bad"}" role="status"><b>${good ? L().correct : L().notQuite}</b><span>${text}</span></div>`;
   return `<div class="fb helper ${good ? "good" : "bad"}" role="status"><button class="pet-mini idle" data-action="pet" data-v="${h}" aria-label="${PET_NAME[h]}">${figure(h)}</button>
     <div class="say"><span class="who">${L().helperSays(PET_NAME[h])}</span><span><b>${good ? L().correct : L().notQuite}</b> ${text}</span></div></div>`;
@@ -2569,29 +2626,41 @@ function renderExplorer2() {
   $app.innerHTML = stage(steps + body);
 }
 
+const COLORS = { red: "#ff8a74", yellow: "#ffc857", green: "#5fd3a6" };
+const colorName = c => ({ en: { red: "Red", yellow: "Yellow", green: "Green" }, id: { red: "Merah", yellow: "Kuning", green: "Hijau" } })[st.lang][c];
+const colorDot = c => `<span class="color-dot" style="background:${COLORS[c]}" aria-hidden="true"></span>`;
+const WHY_ICON_E = ['<svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="7" cy="13" r="5" fill="#7fc8f8"/><polygon points="19,7 25,19 13,19" fill="#ffc857"/></svg>', "♥", "?"];
+const askRow = (q, opts) => `<div class="q-row"><p class="q">${q}</p>${sayBtn(q + " " + opts.join(". "), q)}</div>`;
 function renderExplorer() {
   const l = L(), e = l.e, s = st.exp;
   let body = "";
   const engine = `<div class="car engine" aria-hidden="true"></div>`;
+  const opt = (a, v, inner, name) => `<button class="opt" data-action="${a}" data-v="${v}" aria-label="${name}">${inner}<span class="o-lbl">${name}</span></button>`;
   if (s.step === "r1" || s.step === "why") {
     const seq = ["circle", "tri", "circle", "tri", "circle"];
     const last = s.step === "why" ? `<div class="car">${shapeSVG("tri")}</div>` : `<div class="car mystery">?</div>`;
-    body = `<div class="train">${engine}${seq.map(x => `<div class="car">${shapeSVG(x)}</div>`).join("")}${last}</div>`;
+    body = `<div class="train ${s.step === "why" && s.why === null ? "chug" : ""}">${engine}${seq.map(x => `<div class="car">${shapeSVG(x)}</div>`).join("")}${last}</div>`;
     if (s.step === "r1") {
-      body += `<p class="q">${e.r1}</p><div class="shape-opt">${["sq", "tri", "circle"].map(x => `<button class="opt" data-action="e-pick" data-v="${x}">${shapeSVG(x)}<span>${shapeName(x)}</span></button>`).join("")}</div>
-        ${s.fb ? fbBox(false, e.wrong) : ""}`;
+      body += `${askRow(e.r1, ["sq", "tri", "circle"].map(shapeName))}<div class="shape-opt">${["sq", "tri", "circle"].map(x => opt("e-pick", x, shapeSVG(x), shapeName(x))).join("")}</div>
+        <div class="fb-slot">${s.fb ? fbBox(false, e.wrong) : ""}</div>`;
     } else {
-      body += `${fbBox(true, "")}<p class="q">${e.whyQ}</p>
-        <div class="answers">${e.why.map((w, i) => `<button class="ans ${s.why === i ? (w.ok ? "right" : "wrong") : ""}" data-action="e-why" data-v="${i}">${w.t}</button>`).join("")}</div>
-        ${s.why !== null && !e.why[s.why].ok ? fbBox(false, e.why[s.why].f) : ""}
-        ${s.why !== null && e.why[s.why].ok ? `<button class="primary" data-action="e-step" data-v="r2">${e.next}</button>` : ""}`;
+      const w = s.why === null ? null : e.why[s.why];
+      body += `${askRow(e.whyQ, e.why.map(x => x.t))}
+        <div class="answers">${e.why.map((x, i) => `<button class="ans ${s.why === i ? (x.ok ? "right" : "wrong") : ""}" data-action="e-why" data-v="${i}"><span class="a-ico" aria-hidden="true">${WHY_ICON_E[i]}</span>${x.t}</button>`).join("")}</div>
+        <div class="fb-slot">${!w ? fbBox(true, e.gotIt) : w.ok ? fbBox(true, e.whyGood) : fbBox(false, w.f)}</div>
+        ${w && w.ok ? `<button class="primary" data-action="e-step" data-v="r2">${e.next}</button>` : ""}`;
     }
   } else if (s.step === "r2") {
-    body = `<div class="train">${engine}${[1, 2, 3, 4].map(n => `<div class="car">${lanterns(n)}</div>`).join("")}<div class="car mystery">?</div></div>
-      <p class="q">${e.r2}</p><div class="shape-opt">${[6, 5, 4].map(n => `<button class="opt" data-action="e-pick2" data-v="${n}">${lanterns(n)}<span>${n}</span></button>`).join("")}</div>
-      ${s.fb ? fbBox(false, e.wrong) : ""}`;
+    body = `<div class="train arrive">${engine}${[1, 2, 3, 4].map(n => `<div class="car">${lanterns(n)}</div>`).join("")}<div class="car mystery">?</div></div>
+      ${askRow(e.r2, ["6", "5", "4"])}<div class="shape-opt">${[6, 5, 4].map(n => opt("e-pick2", n, lanterns(n), String(n))).join("")}</div>
+      <div class="fb-slot">${s.fb ? fbBox(false, e.wrong) : ""}</div>`;
+  } else if (s.step === "r3") {
+    const seq = ["red", "red", "yellow", "red", "red"];
+    body = `<div class="train arrive">${engine}${seq.map(c => `<div class="car">${colorDot(c)}</div>`).join("")}<div class="car mystery">?</div></div>
+      ${askRow(e.r3, ["green", "yellow", "red"].map(colorName))}<div class="shape-opt">${["green", "yellow", "red"].map(c => opt("e-pick3", c, colorDot(c), colorName(c))).join("")}</div>
+      <div class="fb-slot">${s.fb ? fbBox(false, e.wrong) : ""}</div>`;
   } else {
-    body = `<div class="train">${engine}${[1, 2, 3, 4, 5].map(n => `<div class="car">${lanterns(n)}</div>`).join("")}</div>` + solveResult("explorer", e, e.resT, e.resS);
+    body = `<div class="train roll">${engine}${["red", "red", "yellow", "red", "red", "yellow"].map(c => `<div class="car">${colorDot(c)}</div>`).join("")}<span class="toot" aria-hidden="true">${e.toot}</span></div>` + solveResult("explorer", e, e.resT, e.resS);
   }
   const head = s.step === "done" ? "" : `<div class="head"><span class="kicker">${e.kicker}</span><h2>${l.title.explorer}</h2><p class="sub">${e.body}</p></div>`;
   $app.innerHTML = stage(head + body);
@@ -2656,7 +2725,7 @@ function boatPanel(b) {
         <div class="trash" data-drop="trash">${x.trash}</div>
         <span class="role">${x.removeHint}</span>
         <div class="btnrow"><button class="primary build" data-action="be-run" ${lock ? "disabled" : ""}>▶ ${x.run}</button><button class="secondary" data-action="be-clear" ${lock ? "disabled" : ""}>${x.clear}</button></div>
-        ${fb}
+        <div class="fb-slot">${fb}</div>
       </div>
     </div>`;
 }
@@ -2837,12 +2906,12 @@ function genBoat(seed) {
   const r = rng(seed), W = 6, H = 5;
   for (let tries = 0; tries < 300; tries++) {
     const g = Array.from({ length: H }, () => Array(W).fill("."));
-    const start = [0, H - 1], harbor = pick(r, [[W - 1, 0], [W - 1, 1], [W - 2, 0], [W - 1, 2]]);
-    const rocks = 7 + Math.floor(r() * 4);
+    const start = [0, H - 1], harbor = pick(r, [[3, 1], [4, 2], [2, 1], [4, 3], [3, 2], [5, 3]]);
+    const rocks = 5 + Math.floor(r() * 3);
     for (let i = 0; i < rocks; i++) g[Math.floor(r() * H)][Math.floor(r() * W)] = "R";
     g[start[1]][start[0]] = "B"; g[harbor[1]][harbor[0]] = "H";
     const d = shortestPath(g, start, harbor);
-    if (d >= 7 && d <= 11) return g.map(row => row.join(""));
+    if (d >= 4 && d <= 6) return g.map(row => row.join("")); // easy (6–9): short routes a young child can hold in mind
   }
   return GRID;
 }
@@ -2906,7 +2975,7 @@ function renderDaily() {
   $app.innerHTML = stage(`
     <div class="head"><span class="kicker build">${y.k}${off ? " · " + y.tomorrowTag : ""}</span><h2>${y.title}</h2>
       <div class="dayrow"><span class="sub">${date}</span>${n ? `<span class="chip ok">${y.streak(n)}</span>` : ""}</div></div>
-    <div class="evid" role="group">${ORDER.map(k => `<button class="ev" data-action="dy-tier" data-v="${k}" aria-pressed="${k === t}">${y.levels[k]}</button>`).join("")}</div>
+    <div class="evid" role="group">${ORDER.map(k => `<button class="ev ${isLocked(k) ? "locked" : ""}" data-action="dy-tier" data-v="${k}" aria-pressed="${k === t}">${isLocked(k) ? "🔒 " : ""}${y.levels[k]}</button>`).join("")}</div>
     ${body}
     ${solved && t === "explorer" ? fbBox(true, y.solvedT) : ""}
     <div class="btnrow"><button class="secondary" data-action="dy-day" data-v="${off ? 0 : 1}">${off ? y.today : y.tomorrow}</button></div>
@@ -3099,6 +3168,8 @@ function renderParent() {
         <p class="note">${p.tip}</p>
         <div class="panel"><h3>${p.badges}</h3>${earned.length ? `<div class="blist">${earned.join("")}</div>` : `<p class="note">${p.none}</p>`}</div>
         <div class="panel"><h3>${G().par.t}</h3>${LEARN_ORDER.some(k => st.learned[k]) ? `<ul class="plearn">${LEARN_ORDER.filter(k => st.learned[k]).map(k => `<li><b>${G().m[k].skill}</b> ${G().book.willUse} ${G().m[k].uses[st.learned[k].use]}</li>`).join("")}</ul><p class="note">${G().par.tip}</p>` : `<p class="note">${G().par.none}</p>`}</div>
+        <div class="panel"><h3>${G().why.t}</h3><ul class="pwhy">${G().why.items.map(t => `<li>${t}</li>`).join("")}</ul>
+          <h3>${G().why.goals}</h3><ul class="pwhy">${LEARN_ORDER.map(k => `<li><b>${actTitle(k)}</b> · ${G().m[k].skill} ${G().m[k].why}</li>`).join("")}</ul></div>
         <div class="panel"><h3>${p.newT}</h3><p class="note">${p.newS}</p><button class="secondary" type="button" data-action="new-player">${p.newB}</button></div>
       </div>
     </div>`);
@@ -3107,16 +3178,17 @@ function renderParent() {
 /* Guidance for kids: first-time onboarding, a mission card on every activity, and a lesson the child saves at the end */
 const GUIDE = {
   en: {
-    help: "How to play", startHere: "Start here",
+    help: "How to play", startHere: "Start here", nextHere: "Next",
+    why: { t: "Why this is good for your child", items: ["They don't fall for fake news easily", "They can explain their reasons clearly", "They can solve problems step by step"], goals: "What each task practises" },
+    gate: { t: "This island is for older explorers", b: "Ask a grown-up to open it. Or keep exploring your own island!", back: "Back to my island",
+      ask: (a, b) => `Grown-ups: what is ${a} × ${b}?`, open: "Open", wrong: "Not right. Try again.", locked: a => `For ${a}` },
     next: "Next", prev: "Back", skip: "Skip", go: "Let's go!",
     onb: [
       { t: "Welcome to Nusa Nalar!", b: "Hi! Let's become island detectives. First, pick your detective." },
       { t: "The islands have gone dark", b: "A storm put out the lamps on the islands. Each island has two tasks. Every task you finish lights a lamp again.",
-        items: [["s", "Solve", "Find clues and evidence to crack the mystery."], ["b", "Build", "Put steps and rules in order to fix what's broken."]] },
-      { t: "Why is this good for you?", b: "Every task trains your brain, and you can use it every day:",
-        items: [["1", "You don't fall for fake news easily", ""], ["2", "You can explain your reasons clearly", ""], ["3", "You can solve problems step by step", ""]],
+        items: [["s", "Solve", "Find clues and evidence to crack the mystery."], ["b", "Build", "Put steps and rules in order to fix what's broken."]],
         foot: "At the end of every task, save what you learned in My Learning Book." },
-      { t: "Animal friends are here to help", b: "If you're stuck, Oyen, Kepi, Cici, Nyu and Rangga give you hints. Mistakes are okay. Just try again!" },
+      { t: "Animal friends are here to help", b: "If you're stuck, Oyen, Kepi, Cici, Nyu and Rangga give you hints. Tap them to say hi! Mistakes are okay. Just try again!", pets: true },
       { t: "How old are you?", b: "We'll mark the best island to start on.", ages: ["6–9", "10–13", "14–17"] }
     ],
     mTitle: "Your mission", mSkill: "You practise", mWhy: "How it helps you",
@@ -3147,16 +3219,17 @@ const GUIDE = {
     }
   },
   id: {
-    help: "Cara bermain", startHere: "Mulai di sini",
+    help: "Cara bermain", startHere: "Mulai di sini", nextHere: "Selanjutnya",
+    why: { t: "Kenapa ini bagus untuk anak", items: ["Tidak gampang percaya kabar bohong", "Bisa menjelaskan alasannya dengan jelas", "Bisa memecahkan masalah langkah demi langkah"], goals: "Yang dilatih setiap tugas" },
+    gate: { t: "Pulau ini untuk penjelajah yang lebih besar", b: "Ajak orang tua untuk membukanya. Atau lanjut jelajahi pulaumu sendiri!", back: "Kembali ke pulauku",
+      ask: (a, b) => `Untuk orang tua: berapa ${a} × ${b}?`, open: "Buka", wrong: "Belum benar. Coba lagi.", locked: a => `Untuk ${a}` },
     next: "Lanjut", prev: "Kembali", skip: "Lewati", go: "Ayo mulai!",
     onb: [
       { t: "Selamat datang di Nusa Nalar!", b: "Halo! Ayo jadi detektif pulau. Pilih detektifmu dulu." },
       { t: "Pulau-pulau sedang gelap", b: "Badai memadamkan lampu di pulau-pulau. Di setiap pulau ada dua tugas. Setiap tugas yang selesai menyalakan lampunya lagi.",
-        items: [["s", "Pecahkan", "Cari petunjuk dan bukti untuk memecahkan misteri."], ["b", "Bangun", "Susun langkah dan aturan untuk memperbaiki yang rusak."]] },
-      { t: "Kenapa ini bagus untukmu?", b: "Setiap tugas melatih otakmu, dan kamu bisa memakainya setiap hari:",
-        items: [["1", "Tidak gampang percaya kabar bohong", ""], ["2", "Bisa menjelaskan alasanmu dengan jelas", ""], ["3", "Bisa memecahkan masalah langkah demi langkah", ""]],
+        items: [["s", "Pecahkan", "Cari petunjuk dan bukti untuk memecahkan misteri."], ["b", "Bangun", "Susun langkah dan aturan untuk memperbaiki yang rusak."]],
         foot: "Di akhir setiap tugas, simpan pelajaranmu di Buku Pelajaranku." },
-      { t: "Teman hewan siap membantu", b: "Kalau bingung, Oyen, Kepi, Cici, Nyu, dan Rangga memberi petunjuk. Salah itu tidak apa-apa. Coba lagi, ya!" },
+      { t: "Teman hewan siap membantu", b: "Kalau bingung, Oyen, Kepi, Cici, Nyu, dan Rangga memberi petunjuk. Ketuk mereka untuk menyapa! Salah itu tidak apa-apa. Coba lagi, ya!", pets: true },
       { t: "Berapa umurmu?", b: "Kami tandai pulau yang cocok untuk mulai.", ages: ["6–9", "10–13", "14–17"] }
     ],
     mTitle: "Misimu", mSkill: "Kamu berlatih", mWhy: "Gunanya untukmu",
@@ -3200,7 +3273,7 @@ function saveLearn() { try { localStorage.setItem("mi-learn", JSON.stringify(st.
 function missionCard() {
   const k = st.screen, m = G().m[k];
   if (!m) return "";
-  const open = st.missionOpen[k] !== false;
+  const open = young() ? st.missionOpen[k] === true : st.missionOpen[k] !== false; // 6–9: spoken instead of read
   return `<details class="mission" data-k="${k}" ${open ? "open" : ""}><summary><span class="m-ico" aria-hidden="true">${ICON_TARGET}</span><span class="m-k">${G().mTitle}</span><span class="m-goal">${m.goal}</span></summary>
     <div class="m-body"><div><span class="m-l">${G().mSkill}</span><p>${m.skill}</p></div><div><span class="m-l">${G().mWhy}</span><p>${m.why}</p></div>${sayBtn(m.goal + " " + m.why, G().mTitle)}</div></details>`;
 }
@@ -3241,7 +3314,7 @@ function renderOnb() {
   let extra = "";
   if (i === 0) extra = `<div class="onb-pick">${["raka", "laras"].map(k => `<button class="who-btn big" data-action="onb-avatar" data-v="${k}" aria-pressed="${st.avatar === k}"><span class="face">${portrait(k)}</span>${k === "raka" ? "Raka" : "Laras"}</button>`).join("")}</div>`;
   if (s.items) extra = `<ul class="onb-items">${s.items.map(([ic, t, d]) => `<li><span class="onb-ic ${ic}">${ic === "s" ? ICON.solve : ic === "b" ? ICON.build : ic}</span><span><b>${t}</b>${d ? `<br>${d}` : ""}</span></li>`).join("")}</ul>${s.foot ? `<p class="onb-foot">${ICON_BOOK} ${s.foot}</p>` : ""}`;
-  if (i === 3) extra = `<div class="onb-pets">${["oyen", "kepi", "cici", "nyu", "rangga"].map(k => `<span class="onb-pet">${figure(k)}<small>${PET_NAME[k]}</small></span>`).join("")}</div>`;
+  if (s.pets) extra = `<div class="onb-pets">${["oyen", "kepi", "cici", "nyu", "rangga"].map(k => `<button class="onb-pet" data-action="pet" data-v="${k}" aria-label="${PET_NAME[k]}">${figure(k)}<small>${PET_NAME[k]}</small></button>`).join("")}</div>`;
   if (s.ages) extra = `<div class="onb-ages">${s.ages.map((a, j) => `<button class="age-btn" data-action="onb-age" data-v="${ORDER[j]}" aria-pressed="${st.ageTier === ORDER[j]}"><b>${a}</b><small>${L().isl[ORDER[j]]}</small></button>`).join("")}</div>`;
   o.innerHTML = `<div class="onb-card"><div class="onb-dots">${g.onb.map((_, j) => `<i class="${j === i ? "on" : j < i ? "done" : ""}"></i>`).join("")}</div>
     <h2>${s.t} ${sayBtn(s.t + ". " + s.b, s.t)}</h2><p class="sub">${s.b}</p>${extra}
@@ -3259,23 +3332,56 @@ const SCREENS = {
   "b-explorer": renderBuildExplorer, "b-detective": renderBuildDetective, "b-strategist": renderBuildStrategist,
   daily: renderDaily
 };
-function render() { header(); SCREENS[st.screen](); autoMoves(); renderOnb(); }
+function render() { header(); document.body.classList.toggle("young", young()); SCREENS[st.screen](); autoMoves(); renderOnb(); renderGate(); }
+
+/* Age gate: islands above the chosen age band need a grown-up (a times-table question) */
+const EXTRA = { explorer: "explorer2", detective: "detective2", strategist: "strategist2" };
+const tierOf = k => LEARN_TIER[k] || k;
+const isLocked = k => { const t = tierOf(k); return !!st.ageTier && ORDER.includes(t) && ORDER.indexOf(t) > ORDER.indexOf(st.ageTier) && !st.unlocked[t]; };
+const islandStarted = k => !!(st.solved[k] || st.built[k] || st.solved[EXTRA[k]]);
+const islandDone = k => !!(st.solved[k] && st.built[k] && st.solved[EXTRA[k]]);
+function markIsland() { if (!st.ageTier) return null; return ORDER.slice(ORDER.indexOf(st.ageTier)).find(k => !islandDone(k) && !isLocked(k)) || null; }
+let gateThen = null;
+function openGate(k, then) {
+  const n = () => 6 + Math.floor(Math.random() * 4);
+  st.gate = { t: tierOf(k), a: n(), b: n(), bad: false }; gateThen = then; sfx("ui-tap"); render();
+  const g = G().gate; sayAs(HELPER[st.ageTier] || "kepi", g.t + ". " + g.b, document.querySelector(".gate-pet svg[data-slug]"));
+}
+function renderGate() {
+  let o = document.getElementById("gate");
+  if (!st.gate) { if (o) o.remove(); return; }
+  if (!o) { o = document.createElement("div"); o.id = "gate"; o.className = "onb"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true"); document.body.appendChild(o); }
+  const g = G().gate, q = st.gate, pet = HELPER[st.ageTier] || "kepi";
+  o.innerHTML = `<div class="onb-card"><div class="gate-pet">${figure(pet)}</div><h2>🔒 ${g.t} ${sayBtn(g.t + ". " + g.b, g.t)}</h2><p class="sub">${g.b}</p>
+    <button class="primary" data-action="gate-close">${g.back}</button>
+    <div class="gate-ask"><label for="gateIn">${g.ask(q.a, q.b)}</label><div class="row"><input id="gateIn" type="text" inputmode="numeric" autocomplete="off" maxlength="3"><button class="secondary" data-action="gate-open">${g.open}</button></div>
+    ${q.bad ? `<span class="note" role="status">${g.wrong}</span>` : ""}</div></div>`;
+}
 /* Next child on the same device: clear per-child progress, keep language and sound settings */
 function newPlayer() {
   if (!window.confirm(L().p.newQ)) return;
-  try { ["mi-daily", "mi-avatar", "mi-learn", "mi-onboard", "mi-age"].forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { ["mi-daily", "mi-avatar", "mi-learn", "mi-onboard", "mi-age", "mi-unlock"].forEach(k => localStorage.removeItem(k)); } catch (e) {}
   try { stopVox(); speechSynthesis.cancel(); } catch (e) {}
   Object.assign(st, fresh(), {
     solved: { explorer: false, detective: false, strategist: false }, built: { explorer: false, detective: false, strategist: false },
     last: null, daily: { tier: "detective", off: 0 }, dc: null, dailyDone: {}, avatar: "raka",
-    learned: {}, learnPick: {}, missionOpen: {}, ageTier: null, onb: 0
+    learned: {}, learnPick: {}, missionOpen: {}, ageTier: null, onb: 0, unlocked: {}, gate: null, celebrate: null
   });
   lastFb = ""; lastHero = "";
   sfx("ui-tap"); go("map");
 }
 const go = screen => { clearTimeout(timer); clearTimers(); st.be.running = false; st.bs.running = false; st.screen = screen; render(); window.scrollTo({ top: 0, behavior: "smooth" }); };
-const solve = k => { st.solved[k] = true; st.last = k; };
-const markBuilt = k => { st.built[k] = true; st.last = k + "-b"; };
+const solve = k => { st.solved[k] = true; st.last = k; st.celebrate = tierOf(k); };
+const markBuilt = k => { st.built[k] = true; st.last = k + "-b"; st.celebrate = k; };
+/* Open an activity; for 6–9 the mission is spoken instead of read */
+const SPEAKS_ON_OPEN = new Set(["explorer2", "detective2", "strategist2"]);
+function openCase(k) {
+  st[FRESH_KEY[k]] = fresh()[FRESH_KEY[k]]; go(k);
+    if (k === "detective2") { sfx("market-hello", 150); setTimeout(() => { const g = document.querySelector(".giver svg[data-slug]"); playMove(g, "no"); sayAs("ratna", L().d2.giver, g); }, 500); }
+    if (k === "explorer2") { sfx("kepi-snap", 150); speak(joinSay(L().e2.title, L().e2.body)); const g = document.querySelector(".giver svg[data-slug]"); playMove(g, "wave"); sayAs("ijah", L().e2.giver, g, { queue: true }); }
+    if (k === "strategist2") { sfx("news-sting", 150); setTimeout(() => { const g = document.querySelector(".giver svg[data-slug]"); playMove(g, "think"); sayAs("putri", L().s2.giver, g); }, 900); }
+    if (young() && !SPEAKS_ON_OPEN.has(k) && G().m[k]) setTimeout(() => { if (st.screen === k) speak(G().m[k].goal); }, 350);
+}
 const FRESH_KEY = { explorer2: "exp2", strategist2: "str2", detective2: "det2", detective: "det", explorer: "exp", strategist: "str", "b-explorer": "be", "b-detective": "bd", "b-strategist": "bs" };
 
 const TAP = new Set(["c9-step", "c2-step", "c2-sus", "c2-ev", "home", "parent", "lang", "island", "open", "d-step", "d-sus", "d-ev", "e-step", "s-step", "be-add", "be-rm", "be-clear", "bd-slot", "bd-place", "bd-next", "dy-tier", "dy-day", "bs-open", "bs-cond", "bs-swap", "avatar"]);
@@ -3303,6 +3409,15 @@ function act(el) {
     case "onb-skip": return onbClose();
     case "onb-avatar": st.avatar = v; try { localStorage.setItem("mi-avatar", v); } catch (err) {} render(); sayAs(v, L().greet[v], document.querySelector(`.onb .who-btn[data-v="${v}"] svg[data-slug]`)); return;
     case "onb-age": st.ageTier = v; try { localStorage.setItem("mi-age", v); } catch (err) {} sfx("ui-tap"); return render();
+    case "gate-close": st.gate = null; gateThen = null; return render();
+    case "gate-open": {
+      const q = st.gate, inp = document.getElementById("gateIn"); if (!q) return;
+      if (inp && +inp.value.trim() === q.a * q.b) {
+        st.unlocked[q.t] = true; try { localStorage.setItem("mi-unlock", JSON.stringify(st.unlocked)); } catch (err) {}
+        const then = gateThen; st.gate = null; gateThen = null; sfx("ui-correct"); render(); if (then) then(); return;
+      }
+      q.bad = true; sfx("ui-wrong"); render(); { const i = document.getElementById("gateIn"); if (i) i.focus(); } return;
+    }
     case "onb-done": onbClose(); sfx("badge-earned"); { const h = HELPER[st.ageTier] || "oyen"; } return;
     case "learnbook": return go("learn");
     case "learn-pick": st.learnPick[st.screen] = +v; sfx("ui-tap"); return render();
@@ -3318,16 +3433,14 @@ function act(el) {
     case "lang": st.lang = v; try { localStorage.setItem("mi-lang", v); } catch (err) {} return render();
     case "island": {
       const k = el.dataset.case;
-      const target = !st.solved[k] ? k : !st.built[k] ? "b-" + k : k;
-      st[FRESH_KEY[target]] = fresh()[FRESH_KEY[target]];
-      return go(target);
+      const target = !st.solved[k] ? k : !st.built[k] ? "b-" + k : !st.solved[EXTRA[k]] ? EXTRA[k] : k;
+      if (isLocked(k)) return openGate(k, () => openCase(target));
+      return openCase(target);
     }
     case "open": {
-      const k = el.dataset.case; st[FRESH_KEY[k]] = fresh()[FRESH_KEY[k]]; go(k);
-      if (k === "detective2") { sfx("market-hello", 150); setTimeout(() => { const g = document.querySelector(".giver svg[data-slug]"); playMove(g, "no"); sayAs("ratna", L().d2.giver, g); }, 500); }
-      if (k === "explorer2") { sfx("kepi-snap", 150); speak(joinSay(L().e2.title, L().e2.body)); const g = document.querySelector(".giver svg[data-slug]"); playMove(g, "wave"); sayAs("ijah", L().e2.giver, g, { queue: true }); }
-      if (k === "strategist2") { sfx("news-sting", 150); setTimeout(() => { const g = document.querySelector(".giver svg[data-slug]"); playMove(g, "think"); sayAs("putri", L().s2.giver, g); }, 900); }
-      return;
+      const k = el.dataset.case;
+      if (isLocked(k)) return openGate(k, () => openCase(k));
+      return openCase(k);
     }
 
     case "say": speak(el.dataset.say); return;
@@ -3453,9 +3566,10 @@ function act(el) {
     }
     case "d-why": d.why = +v; if (L().d.why[+v].ok) { solve("detective"); d.step = 5; sfx("badge-earned"); sfx("oyen-purr", 900); } else { sfx("ui-wrong"); sfx("oyen-meow", 350); } return render();
     case "e-pick": if (v === "tri") { e.step = "why"; e.fb = null; sfx("ui-correct"); } else { e.fb = true; sfx("ui-wrong"); sfx("kepi-snap", 350); } return render();
-    case "e-why": e.why = +v; sfx(L().e.why[+v].ok ? "ui-correct" : "ui-wrong"); return render();
+    case "e-why": e.why = +v; if (L().e.why[+v].ok) { sfx("ui-correct"); sfx("kepi-snap", 300); } else sfx("ui-wrong"); return render();
     case "e-step": e.step = v; e.fb = null; return render();
-    case "e-pick2": if (v === "5") { e.step = "done"; solve("explorer"); sfx("badge-earned"); sfx("kepi-snap", 900); } else { e.fb = true; sfx("ui-wrong"); } return render();
+    case "e-pick2": if (v === "5") { e.step = "r3"; e.fb = null; sfx("ui-correct"); sfx("boat-move", 200); } else { e.fb = true; sfx("ui-wrong"); } return render();
+    case "e-pick3": if (v === "yellow") { e.step = "done"; solve("explorer"); sfx("ui-correct"); sfx("ferry-horn", 500); sfx("badge-earned", 2600); sfx("kepi-snap", 3200); } else { e.fb = true; sfx("ui-wrong"); } return render();
     case "s-flag": if (!s.flags.includes(v)) s.flags.push(v); s.last = v; sfx(["urgent", "source", "spread", "hide"].includes(v) ? "clue-found" : "ui-wrong"); return render();
     case "s-step": s.step = v; return render();
     case "s-dec": s.dec = +v; if (L().s.dec[+v].ok) { s.step = "done"; solve("strategist"); sfx("badge-earned"); sfx("rangga-call", 900); } else { sfx("ui-wrong"); sfx("rangga-call", 350); } return render();
@@ -3492,8 +3606,10 @@ function act(el) {
     }
     case "bd-next": Object.assign(bd, { lvl: bd.lvl + 1, slots: {}, sel: null, vals: firstVals(LV[bd.lvl + 1]), results: null, fb: null, lvlDone: false }); return render();
 
-    case "open-daily": openDaily(); sfx("daily-chime"); sfx("nyu-blub", 700); return go("daily");
-    case "dy-tier": st.daily.tier = v; openDaily(); return render();
+    case "open-daily": if (st.ageTier) st.daily.tier = st.ageTier; openDaily(); sfx("daily-chime"); sfx("nyu-blub", 700); go("daily");
+      if (young()) setTimeout(() => { if (st.screen === "daily") speak(st.daily.tier === "explorer" ? L().dy.goalBoat : L().dy.goalCircuit); }, 900);
+      return;
+    case "dy-tier": if (isLocked(v)) return openGate(v, () => { st.daily.tier = v; openDaily(); render(); }); st.daily.tier = v; openDaily(); return render();
     case "dy-day": st.daily.off = +v; openDaily(); return render();
 
     case "bs-open": bs.open = bs.open === v ? null : v; return render();
@@ -3599,6 +3715,7 @@ document.addEventListener("click", ev => {
   if (el && !el.disabled) act(el);
 });
 document.addEventListener("keydown", ev => {
+  if (ev.target && ev.target.id === "gateIn" && ev.key === "Enter") { ev.preventDefault(); const b = document.querySelector('[data-action="gate-open"]'); if (b) act(b); return; }
   const el = ev.target.closest && ev.target.closest("[data-action]");
   if (el && el.tagName !== "BUTTON" && (ev.key === "Enter" || ev.key === " ")) { ev.preventDefault(); act(el); }
 });

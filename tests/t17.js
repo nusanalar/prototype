@@ -15,10 +15,11 @@ const SHOTS = process.env.SHOTS || '';
     const over = async n => { const o = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth); ok(o <= 1, `${locale}: ${n} overflows ${o}px`); };
     await p.goto(URL_HTTP); await p.waitForTimeout(400);
     ok(await p.isVisible('#onb'), `${locale}: onboarding should show on first visit`);
-    for (let i = 0; i < 5; i++) {
+    const N = await p.evaluate(() => G().onb.length);
+    for (let i = 0; i < N; i++) {
       await shot('onb' + i); await over('onboarding step ' + (i + 1));
       if (i === 0) await p.click('[data-action="onb-avatar"][data-v="laras"]');
-      if (i === 4) { ok(await p.isDisabled('[data-action="onb-done"]'), `${locale}: start should wait for an age`); await p.click('[data-action="onb-age"][data-v="detective"]'); await shot('onb4b'); await p.click('[data-action="onb-done"]'); }
+      if (i === N - 1) { ok(await p.isDisabled('[data-action="onb-done"]'), `${locale}: start should wait for an age`); await p.click('[data-action="onb-age"][data-v="detective"]'); await shot('onb4b'); await p.click('[data-action="onb-done"]'); }
       else await p.click('[data-action="onb-next"]');
       await p.waitForTimeout(150);
     }

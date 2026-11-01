@@ -13,7 +13,7 @@ const { chromium } = require('playwright');
     const tx = dst.includes('pblock') ? d.x + 4 : dst === '.prog' ? d.x + d.width - 8 : d.x + d.width/2;
     await p.mouse.move(tx, d.y + d.height/2, { steps: 8 }); await p.mouse.up(); await p.waitForTimeout(100);
   };
-  for (const d of ['right','right','right','right','right','up','up','up']) await dragTo(`[data-drag="arrow"][data-v="${d}"]`, '.prog');
+  for (const d of ['right','right','right','right','up','up']) await dragTo(`[data-drag="arrow"][data-v="${d}"]`, '.prog');
   console.log('prog after drag:', await p.evaluate(() => st.be.prog.join(',')));
   // reorder: drag block 0 to trash then re-add
   await dragTo('.pblock >> nth=0', '.trash');
