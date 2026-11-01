@@ -11,7 +11,7 @@ TESTS := $(sort $(wildcard tests/t*.js))
 help:
 	@echo 'make serve      Play it at http://127.0.0.1:$(PORT)/ (PORT=8000)'
 	@echo 'make test       Run every Playwright test in tests/ (or one: make test TESTS=tests/t17.js)'
-	@echo 'make voxsync    Copy the voice lines from the asset kit $(ASSETS) (id and en) into index.html'
+	@echo 'make voxsync    Copy the voice MP3s from the asset kit $(ASSETS) (id and en) into voices/ and link them in index.html'
 	@echo '                (voices are generated in the assets repo: make voices there)'
 
 serve:
