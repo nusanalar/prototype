@@ -34,7 +34,7 @@ const SHOTS = process.env.SHOTS || '';
     await p.click('[data-action="open"][data-case="detective"]'); await p.waitForTimeout(200);
     ok(await p.isVisible('details.mission[open] .m-goal'), `${locale}: mission card missing`); await shot('mission'); await over('mission');
     // finish the case and save the lesson
-    await p.evaluate(() => { st.det.step = 4; st.det.sus = 'bayu'; solve('detective'); render(); });
+    await p.evaluate(() => { st.det.step = 5; st.det.sus = 'bayu'; solve('detective'); render(); });
     await p.waitForTimeout(150);
     ok(await p.isVisible('.learn .use-opt'), `${locale}: lesson card missing on result`);
     ok(await p.isDisabled('[data-action="learn-save"]'), `${locale}: save should wait for a choice`);

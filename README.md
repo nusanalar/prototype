@@ -2,7 +2,7 @@
 
 A single-file playable prototype of **Nusa Nalar** (earlier working title: *Pulau Misteri / Mystery Isles*). Open `index.html` in a browser: no build or server needed.
 
-- Cases: Detective #07 and #08, Strategist #09 (News Port), Explorer #10 (Pattern Isle), three Build puzzles, a daily puzzle and a parent view.
+- Cases: Detective #07 (with a "Number check" step: a maths clue about Bu Sari's baking times) and #08, Strategist #09 (News Port), Explorer #10 (Pattern Isle), three Build puzzles, a daily puzzle and a parent view.
 - Indonesian and English, with recorded Indonesian AI voice lines and device voices as a fallback. Light and dark modes.
 - Guidance for kids:
   - **Onboarding** (first visit, replay with the **?** button): pick a detective, what the two tasks are, why it helps them, the animal helpers, and their age, which marks the island to start on.
