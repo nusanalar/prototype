@@ -99,7 +99,7 @@ function speak(text) {
   } catch (e) {}
 }
 const escAttr = t => String(t).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
-const sayBtn = (text, label) => `<button class="say-btn" data-action="say" data-say="${escAttr(text)}" aria-label="${label}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="currentColor"/><path d="M16 9 Q18 12 16 15 M18.5 6.5 Q22 12 18.5 17.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>`;
+const sayBtn = (text, label, who) => `<button class="say-btn" data-action="say" data-say="${escAttr(text)}"${who ? ` data-who="${who}"` : ""} aria-label="${label}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="currentColor"/><path d="M16 9 Q18 12 16 15 M18.5 6.5 Q22 12 18.5 17.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>`;
 
 const GECKO_PRINT = (x, y, r) => `<g transform="translate(${x} ${y}) rotate(${r})" fill="#8a6d3b" stroke="#8a6d3b" stroke-width="1.6" stroke-linecap="round"><circle r="3.2"/><path d="M0 0 L-7 -5 M0 0 L-4 -9 M0 0 L0 -10 M0 0 L4 -9 M0 0 L7 -5" fill="none"/><circle cx="-7" cy="-5" r="1.9"/><circle cx="-4" cy="-9" r="1.9"/><circle cx="0" cy="-10" r="1.9"/><circle cx="4" cy="-9" r="1.9"/><circle cx="7" cy="-5" r="1.9"/></g>`;
 const PIC10 = {
@@ -122,7 +122,7 @@ function renderExplorer2() {
   if (s.step === 0) {
     body = `<div class="head"><span class="kicker">${x.kicker}</span><h2>${x.title} ${say(x.title + ". " + x.body)}</h2></div>
       <div class="story10"><div class="pic-big">${PIC10.bite}</div><p class="big-line">${x.body}</p></div>
-      <div class="giver"><div class="giver-fig">${figure("ijah")}</div><div class="giver-say"><span class="who">${x.giverSays}</span><p>${x.giver} ${say(x.giver)}</p></div></div>
+      <div class="giver"><div class="giver-fig">${figure("ijah")}</div><div class="giver-say"><span class="who">${x.giverSays}</span><p>${x.giver} ${sayBtn(x.giver, x.listen, "ijah")}</p></div></div>
       <button class="primary big" data-action="e10-step" data-v="1">${x.start}</button>`;
   } else if (s.step === 1) {
     const keys = ["oyen", "cici", "nyu", "prints", "bite", "window"], need = Math.max(0, keys.length - s.seen.length);
