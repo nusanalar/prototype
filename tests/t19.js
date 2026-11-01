@@ -9,7 +9,7 @@ const { serve } = require('./_server');
   for (const [locale, w] of [['id-ID', 390], ['en-US', 1000]]) {
     const ctx = await b.newContext({ locale, viewport: { width: w, height: 760 }, reducedMotion: 'reduce' }); const p = await ctx.newPage();
     const errs = []; p.on('pageerror', e => errs.push(e.message));
-    await p.addInitScript(() => { window.__said = []; HTMLMediaElement.prototype.play = () => Promise.resolve(); try { localStorage.setItem('mi-age', 'explorer'); } catch (e) {} });
+    await p.addInitScript(() => { window.__said = []; window.__played = []; HTMLMediaElement.prototype.play = function () { window.__played.push(this.src); return Promise.resolve(); }; try { localStorage.setItem('mi-age', 'explorer'); } catch (e) {} });
     await p.goto(URL); await p.waitForTimeout(300);
     const over = async n => { const o = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth); ok(o <= 1, `${locale}: ${n} overflows ${o}px`); };
     // onboarding: 4 steps, no parent benefits step, pets respond
@@ -48,7 +48,8 @@ const { serve } = require('./_server');
     ok(!/(Belum tepat\.|Not quite\.)\s*\1/.test(t), `${locale}: duplicate lead in "${t.trim()}"`);
     await p.click('[data-action="e-pick"][data-v="tri"]');
     await p.click('[data-action="e-why"][data-v="0"]'); await p.waitForTimeout(300);
-    ok(await p.$('.fb.good') && /Hebat|Great/.test(await p.textContent('.fb')), `${locale}: no praise for the right reason`);
+    ok(await p.$('.fb.good') && /Pintar|Clever/.test(await p.textContent('.fb')), `${locale}: no praise for the right reason`);
+    ok(await p.evaluate(() => { const want = (st.lang === 'id' ? VOX : VOX_EN)[voxKey('kepi', L().correct)]; return window.__played.some(s => s.endsWith(want)); }), `${locale}: praise should play Kepi's recorded clip, not the device voice`);
     const inView = await p.evaluate(() => { const r = document.querySelector('.fb').getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; });
     ok(inView, `${locale}: feedback not on screen`);
     await p.click('[data-action="e-step"][data-v="r2"]'); await p.click('[data-action="e-pick2"][data-v="5"]');

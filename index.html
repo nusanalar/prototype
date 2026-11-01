@@ -1104,7 +1104,7 @@ const T = {
       kicker: "Pattern Isle · Explorer",
       body: "The island train won't move until its cars follow the right pattern. What comes next?",
       r1: "Which shape goes on the next car?", r2: "How many lanterns go on the next car?", r3: "Which colour goes on the next car?",
-      gotIt: "That's it! The train is waking up.", whyGood: "Great thinking! You spotted what repeats.", toot: "Toot toot!",
+      gotIt: "Look, the train is starting to move!", whyGood: "You saw the shapes take turns. Clever!", toot: "Toot toot!",
       wrong: "Look at the cars from the start, one by one.",
       whyQ: "How did you know it was a triangle?",
       why: [
@@ -1425,7 +1425,7 @@ const T = {
       kicker: "Pulau Pola · Penjelajah",
       body: "Kereta pulau tidak bisa jalan sampai gerbongnya mengikuti pola yang benar. Apa yang selanjutnya?",
       r1: "Bentuk apa untuk gerbong berikutnya?", r2: "Berapa lentera di gerbong berikutnya?", r3: "Warna apa untuk gerbong berikutnya?",
-      gotIt: "Betul! Keretanya mulai bangun.", whyGood: "Hebat! Kamu menemukan yang berulang.", toot: "Tuut tuut!",
+      gotIt: "Lihat, keretanya mulai bergerak!", whyGood: "Kamu lihat bentuknya bergantian. Pintar!", toot: "Tuut tuut!",
       wrong: "Lihat gerbongnya dari awal, satu per satu.",
       whyQ: "Bagaimana kamu tahu jawabannya segitiga?",
       why: [
@@ -1630,9 +1630,14 @@ function autoMoves() {
   const fb = document.querySelector(".fb.helper"), key = fb ? fb.textContent : "";
   if (fb && key !== lastFb) {
     keepInView(fb, "center");
-    const h = fb.querySelector("svg[data-slug]"), line = fb.querySelector(".say > span:last-child");
-    playMove(h, fb.classList.contains("good") ? "happy" : "no");
-    if (h && line) sayAs(h.dataset.slug, line.textContent, h, { tic: true });
+    const h = fb.querySelector("svg[data-slug]"), line = fb.querySelector(".say > span:last-child"), good = fb.classList.contains("good");
+    playMove(h, good ? "happy" : "no");
+    if (h && line) {
+      // Praise with no recording yet: play the friend's recorded "Correct!" instead of the robotic device voice
+      const who = h.dataset.slug, vox = st.lang === "id" ? VOX : VOX_EN, lead = L().correct;
+      if (good && !vox[voxKey(who, line.textContent)] && vox[voxKey(who, lead)]) sayAs(who, lead, h);
+      else sayAs(who, line.textContent, h, { tic: true });
+    }
   }
   lastFb = key;
   const hero = document.querySelector(".hero-row"), hk = hero ? st.screen + "|" + (st.last || "") : "";
