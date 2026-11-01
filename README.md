@@ -3,11 +3,12 @@
 A single-file playable prototype of **Nusa Nalar** (earlier working title: *Pulau Misteri / Mystery Isles*). Open `index.html` in a browser: no build or server needed.
 
 - Cases: Detective #07 (with a "Number check" step: a maths clue about Bu Sari's baking times) and #08, Strategist #09 (News Port), Explorer #10 (Pattern Isle), three Build puzzles, a daily puzzle and a parent view.
-- Indonesian and English, with recorded Indonesian AI voice lines and device voices as a fallback. Light and dark modes.
+- Indonesian and English, with recorded AI voice lines (Indonesian for every character, English for the narrator once generated) and device voices as a fallback. `make voxsync` copies the asset kit's `voices/id` and `voices/en` MP3s into `voices/` next to the page and links them from `index.html`, so the page stays small and loads only the line it plays. Commit `voices/` together with `index.html` when deploying. Light and dark modes.
 - Guidance for kids:
   - **Onboarding** (first visit, replay with the **?** button): pick a detective, what the two tasks are, why it helps them, the animal helpers, and their age, which marks the island to start on.
   - **Mission card** on every activity: what to do, the skill they practise, and how it helps them in real life.
   - **Lesson to acknowledge** at the end of every activity: the child picks when they'd use it and taps "Aku paham!". Saved lessons appear in **Buku Pelajaranku** (My Learning Book) and in the parent view.
+- Run `make` for the commands: `make serve`, `make test`, `make voxsync` (copy voice lines from the assets repo into the page). Voices are generated in the assets repo (`make voices` there), which is the single source for the prototype and the future app.
 - `tests/`: Playwright scripts (`node tests/t17.js`; `_setup.js` skips onboarding for older tests), `tools/`: the Python scripts that injected cases, assets and voices into the page.
 
 ## Play-testing with kids

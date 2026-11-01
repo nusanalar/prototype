@@ -6,8 +6,9 @@ const { chromium } = require('playwright');
     localStorage.setItem('mi-lang', 'id'); const o = window.scrollTo.bind(window); window.scrollTo = () => o(0, 0);
     window.__vox = []; window.__sfx = []; window.__tts = []; window.__spk = 0;
     HTMLMediaElement.prototype.play = function () {
-      if (this.src.startsWith('data:audio/mpeg') && !Object.values(SND).includes(this.src)) {
-        const k = Object.keys(VOX).find(k => VOX[k] === this.src); window.__vox.push(k.slice(0, 70));
+      const vk = Object.keys(VOX).find(k => this.src.endsWith('/' + VOX[k]));
+      if (vk) {
+        const k = vk; window.__vox.push(k.slice(0, 70));
         setTimeout(() => { window.__spk = Math.max(window.__spk, document.querySelectorAll('.speaking').length); }, 50);
         setTimeout(() => this.onended && this.onended(), 300);
       } else window.__sfx.push(Object.entries(SND).find(([k, v]) => v === this.src)?.[0] || '?');
