@@ -15,6 +15,8 @@ def inner(c, foot=258):
         wave = " waver" if lid == c["wave"] else ""
         parts.append(f'<g class="{lid}{wave}"{style}>{markup}</g>')
     out = re.sub(r'<g id="([a-z-]+)"', r'<g class="\1"', "".join(parts))
+    from rig import rig_document  # joints from the asset kit (assets/tools/rig.py)
+    out = rig_document(out, "class")
     body = out.replace("url(#bayuShirt)", "url(#bayuShirtP)")
     return c["defs"].replace('id="bayuShirt"', 'id="bayuShirtP"') + f'<g class="mv-body" style="transform-origin:100px {foot}px">{body}</g>'
 
