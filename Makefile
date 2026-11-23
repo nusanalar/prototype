@@ -6,7 +6,7 @@ PORT ?= 8000
 ASSETS ?= ../assets
 TESTS := $(sort $(wildcard tests/t*.js))
 
-.PHONY: help serve test voxsync voxscript
+.PHONY: help serve test voxsync voxscript artsync
 
 help:
 	@echo 'make serve      Play it at http://127.0.0.1:$(PORT)/ (PORT=8000)'
@@ -14,6 +14,7 @@ help:
 	@echo 'make voxsync    Copy the voice MP3s from the asset kit $(ASSETS) (id and en) into voices/ and link them in index.html'
 	@echo '                (voices are generated in the assets repo: make voices there)'
 	@echo 'make voxscript  Add a voice line for every text in the page to $(ASSETS)/voices/*/lines.json and write voices/SCRIPT.md'
+	@echo 'make artsync     Export the asset kit'"'"'s painted backgrounds ($(ASSETS)/environment/painted) as web-sized WebP into art/'
 
 serve:
 	$(PYTHON) -m http.server $(PORT) --bind 127.0.0.1
@@ -26,3 +27,6 @@ voxsync:
 
 voxscript:
 	$(NODE) tools/voxscript.js $(ASSETS)
+
+artsync:
+	$(PYTHON) tools/artsync.py $(ASSETS)

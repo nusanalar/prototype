@@ -168,31 +168,17 @@ p { margin: 0; }
 .legend b { color: var(--ink); font-weight: 600; }
 .legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--lantern); margin-right: 6px; vertical-align: -1px; }
 .legend .sq { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--sky); margin-right: 6px; vertical-align: -1px; }
-.map { width: 100%; height: auto; display: block; border-radius: 20px; border: 1px solid var(--line); background: var(--map-bg); }
+.map { width: 100%; height: auto; display: block; border-radius: 16px; border: 1px solid var(--line); background: var(--map-bg); }
 .shallow { fill: var(--shallow-c); opacity: .55; }
 .isl { cursor: pointer; }
-.isl:hover .sandshape, .isl:focus-visible .sandshape { stroke: var(--lantern); stroke-width: 3; }
+.map-paint { pointer-events: none; }
+.isl:hover .ring, .isl:focus-visible .ring { stroke: var(--lantern); stroke-width: 3; }
 .isl:focus { outline: none; }
-.sandshape { fill: var(--sand); }
-.grassshape { fill: var(--grass); }
-.grass-dk { fill: var(--grass-dark); }
-.wall { fill: #d9cdb8; }
-.roof { fill: #b9644e; }
-.tower { fill: #f1ece2; }
-.stripe { fill: #c75a49; }
+.isl .ring { fill: rgba(255,255,255,0.001); stroke: transparent; stroke-width: 3; }
 .dark-metal { fill: #4a5b6b; }
-.win { fill: #29384a; transition: fill .8s ease; }
-.isl.on .win { fill: var(--lantern); }
-.isl.on .win:nth-of-type(2n) { transition-delay: .25s; }
-.beam { fill: var(--lantern); opacity: 0; transition: opacity 1s ease; }
-.isl.built .beam { opacity: .28; animation: sweep 4s ease-in-out infinite; transform-origin: 432px 69px; }
-@keyframes sweep { 0%,100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
-.glow { fill: var(--lantern); opacity: 0; transition: opacity 1s; }
+.glow { fill: var(--lantern); opacity: 0; transition: opacity 1s; pointer-events: none; }
 .isl.on .glow { opacity: .14; }
-.built-el { opacity: 0; transition: opacity 1s, transform 1s; transform: translateY(8px); }
-.isl.built .built-el { opacity: 1; transform: none; }
-.antenna { fill: #4a5b6b; transition: fill .8s; }
-.isl.built .antenna { fill: var(--sky); }
+.isl.locked .ring { fill: rgba(10,20,30,.45); }
 .lbl { font-family: var(--display); font-weight: 700; font-size: 19px; fill: #fffcf6; paint-order: stroke; stroke: #1f5566; stroke-width: 4px; stroke-linejoin: round; }
 .lbl-sub { font-family: var(--body); font-size: 12px; fill: #eef7f6; paint-order: stroke; stroke: #1f5566; stroke-width: 3px; stroke-linejoin: round; }
 .wave { fill: none; stroke: #ffffff; stroke-width: 2; stroke-linecap: round; opacity: .55; }
@@ -221,6 +207,9 @@ p { margin: 0; }
 
 /* Stage */
 .stage { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: clamp(18px, 3vw, 30px); display: grid; gap: 18px; }
+.scene-paint { width: 100%; height: clamp(110px, 18vw, 200px); margin: -6px 0 0; border-radius: 14px; background-size: cover; background-position: center 60%; box-shadow: inset 0 -40px 40px -30px rgba(0,0,0,.35); }
+.stage.painted { background: linear-gradient(to bottom, color-mix(in srgb, var(--card) 35%, transparent) 0, var(--card) 230px), var(--paint) center top / 100% auto no-repeat, var(--card); }
+.stage.painted .back { background: var(--card); padding: 4px 10px; border-radius: 999px; justify-self: start; }
 .back { justify-self: start; background: none; border: 0; color: var(--muted); cursor: pointer; padding: 0; font-size: .85rem; }
 .back:hover { color: var(--ink); }
 .steps { display: flex; gap: 6px; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; }
@@ -694,10 +683,9 @@ table.tests.goal { min-width: 0; }
 .onb-btns { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .onb-btns .primary { margin-left: auto; }
 .onb-btns .primary:disabled { opacity: .5; cursor: default; }
-.isl.start .sandshape { stroke: var(--lantern); stroke-width: 5; stroke-dasharray: 12 7; animation: startDash 1.4s linear infinite; }
+.isl.start .ring { stroke: var(--lantern); stroke-width: 5; stroke-dasharray: 12 7; animation: startDash 1.4s linear infinite; }
 @keyframes startDash { to { stroke-dashoffset: -38; } }
 /* Islands above the child's age band: dimmed with a lock until a grown-up opens them */
-.isl.locked > :not(.lock-g):not(.lbl):not(.lbl-sub) { filter: grayscale(.75) brightness(.85); }
 .lock-g rect { fill: var(--card); stroke: var(--muted); stroke-width: 2; } .lock-g path { fill: none; stroke: var(--muted); stroke-width: 3; }
 .chip.lock { background: var(--card-2); color: var(--muted); }
 .ev.locked { opacity: .6; }
@@ -711,7 +699,7 @@ table.tests.goal { min-width: 0; }
 .gate-pet { display: flex; justify-content: center; } .gate-pet svg { width: 110px; height: auto; }
 .pwhy li { margin-bottom: 6px; }
 .start-t { font: 800 15px var(--display); fill: #fff3d6; paint-order: stroke; stroke: #7a4a06; stroke-width: 4px; stroke-linejoin: round; }
-@media (prefers-reduced-motion: reduce) { .isl.start .sandshape { animation: none; } .isl.celebrate .glow { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .isl.start .ring { animation: none; } .isl.celebrate .glow { animation: none; } }
 </style>
 
 <header class="bar">
@@ -1857,58 +1845,28 @@ function mapSVG() {
     const n = (st.solved[k] ? 1 : 0) + (st.built[k] ? 1 : 0);
     return `<g><circle class="pin ${n === 2 ? "full" : n === 1 ? "half" : ""}" cx="${x}" cy="${y}" r="14"/><text class="pin-t" x="${x}" y="${y + 4}" text-anchor="middle">${n}/2</text></g>`;
   };
-  return `<svg class="map" viewBox="0 0 800 450" role="img" aria-label="${l.mapTitle}">
-    <circle class="moon" cx="730" cy="52" r="22"/>
-    ${[[60,40],[150,70],[260,30],[560,60],[640,30],[330,80],[480,28]].map(([x,y]) => `<circle class="star" cx="${x}" cy="${y}" r="1.6"/>`).join("")}
-    ${[[70,170],[260,420],[560,170],[700,425],[330,300],[90,425],[760,220]].map(([x,y]) => `<path class="wave" d="M${x} ${y} q10 -7 20 0 t20 0"/>`).join("")}
+  return `<svg class="map" viewBox="0 0 800 360" role="img" aria-label="${l.mapTitle}">
+    <image class="map-paint" href="art/map/map-nusa-nalar.webp" x="0" y="0" width="800" height="360" preserveAspectRatio="xMidYMid slice" aria-hidden="true"/>
 
     <g class="isl ${cls("explorer")}" data-action="island" data-case="explorer" role="button" tabindex="0" aria-label="${l.isl.explorer}">
-      <ellipse class="shallow" cx="170" cy="304" rx="147" ry="77"/><ellipse class="glow" cx="170" cy="300" rx="160" ry="90"/>
-      <ellipse class="sandshape" cx="170" cy="305" rx="128" ry="62"/>
-      <ellipse class="grassshape" cx="170" cy="298" rx="106" ry="46"/>
-      <path d="M85 312 H255" stroke="#6b4f35" stroke-width="3"/>
-      <rect x="100" y="292" width="34" height="18" rx="3" fill="#ff8a74"/><rect x="138" y="294" width="28" height="16" rx="3" fill="#ffc857"/><rect x="170" y="294" width="28" height="16" rx="3" fill="#5fd3a6"/><rect x="202" y="294" width="28" height="16" rx="3" fill="#d9cdb8"/>
-      <rect class="win" x="106" y="296" width="8" height="6"/><rect class="win" x="120" y="296" width="8" height="6"/>
-      <g><rect class="wall" x="200" y="258" width="30" height="24"/><polygon class="roof" points="196,260 215,244 234,260"/><rect class="win" x="206" y="266" width="7" height="7"/><rect class="win" x="218" y="266" width="7" height="7"/></g>
-      <g><rect class="wall" x="120" y="256" width="26" height="22"/><polygon class="roof" points="116,258 133,243 150,258"/><rect class="win" x="129" y="264" width="8" height="8"/></g>
-      <g class="built-el"><rect x="262" y="342" width="40" height="5" fill="#a0784f"/><path d="M270 334 H300 L296 342 H274 Z" fill="#ff8a74"/><rect x="284" y="316" width="2" height="18" fill="#eef4f2"/><polygon points="286,317 296,331 286,331" fill="#eef4f2"/></g>
-      ${pin(250, 248, "explorer")}
-      ${label("explorer", 170, 392)}
+      <ellipse class="glow" cx="155" cy="160" rx="125" ry="92"/><ellipse class="ring" cx="155" cy="160" rx="125" ry="92"/>
+      ${pin(205, 70, "explorer")}
+      ${label("explorer", 150, 300)}
     </g>
 
     <g class="isl ${cls("detective")}" data-action="island" data-case="detective" role="button" tabindex="0" aria-label="${l.isl.detective}">
-      <polygon class="beam" points="432,69 140,25 140,115"/>
-      <polygon class="beam" points="432,69 760,35 760,120"/>
-      <ellipse class="shallow" cx="420" cy="184" rx="156" ry="81"/><ellipse class="glow" cx="420" cy="180" rx="170" ry="95"/>
-      <ellipse class="sandshape" cx="420" cy="190" rx="132" ry="64"/>
-      <ellipse class="grassshape" cx="410" cy="183" rx="108" ry="48"/>
-      <ellipse class="grass-dk" cx="450" cy="176" rx="40" ry="18"/>
-      <polygon class="tower" points="420,170 425,82 439,82 444,170"/>
-      <rect class="stripe" x="422" y="108" width="20" height="9"/><rect class="stripe" x="421" y="140" width="22" height="9"/>
-      <rect class="dark-metal" x="419" y="76" width="26" height="6"/>
-      <rect class="win" x="423" y="62" width="18" height="14" rx="2"/>
-      <polygon class="dark-metal" points="419,62 432,50 445,62"/>
-      <g><rect class="wall" x="352" y="172" width="30" height="22"/><polygon class="roof" points="348,174 367,158 386,174"/><rect class="win" x="358" y="179" width="7" height="7"/><rect class="win" x="370" y="179" width="7" height="7"/></g>
-      <g><rect class="wall" x="470" y="186" width="26" height="20"/><polygon class="roof" points="466,188 483,174 500,188"/><rect class="win" x="479" y="193" width="8" height="7"/></g>
-      ${pin(500, 140, "detective")}
-      ${label("detective", 420, 278)}
+      <ellipse class="glow" cx="440" cy="165" rx="112" ry="82"/><ellipse class="ring" cx="440" cy="165" rx="112" ry="82"/>
+      ${pin(510, 96, "detective")}
+      ${label("detective", 440, 290)}
     </g>
 
     <g class="isl ${cls("strategist")}" data-action="island" data-case="strategist" role="button" tabindex="0" aria-label="${l.isl.strategist}">
-      <ellipse class="shallow" cx="650" cy="304" rx="147" ry="77"/><ellipse class="glow" cx="650" cy="300" rx="160" ry="90"/>
-      <ellipse class="sandshape" cx="650" cy="310" rx="124" ry="60"/>
-      <ellipse class="grassshape" cx="650" cy="303" rx="102" ry="44"/>
-      <rect class="dark-metal" x="580" y="300" width="80" height="6"/>
-      <g><rect class="wall" x="626" y="230" width="40" height="72"/><path d="M646 230 V200" stroke="#9bb5c3" stroke-width="2"/><circle class="antenna" cx="646" cy="198" r="5"/>
-        <rect class="win" x="632" y="240" width="8" height="8"/><rect class="win" x="652" y="240" width="8" height="8"/><rect class="win" x="632" y="256" width="8" height="8"/><rect class="win" x="652" y="256" width="8" height="8"/><rect class="win" x="632" y="272" width="8" height="8"/><rect class="win" x="652" y="272" width="8" height="8"/></g>
-      <g><rect class="wall" x="676" y="266" width="34" height="36"/><rect class="win" x="682" y="274" width="8" height="8"/><rect class="win" x="696" y="274" width="8" height="8"/><rect class="win" x="682" y="288" width="8" height="8"/></g>
-      <g><rect class="wall" x="590" y="270" width="28" height="30"/><polygon class="roof" points="586,272 604,256 622,272"/><rect class="win" x="600" y="280" width="8" height="8"/></g>
-      <g class="built-el"><path d="M508 352 H560 L552 366 H516 Z" fill="#eef4f2"/><rect x="520" y="340" width="26" height="12" fill="#7fc8f8"/><rect x="530" y="330" width="6" height="10" fill="#ff8a74"/></g>
-      ${pin(722, 248, "strategist")}
-      ${label("strategist", 650, 394)}
+      <ellipse class="glow" cx="700" cy="150" rx="105" ry="100"/><ellipse class="ring" cx="700" cy="150" rx="105" ry="100"/>
+      ${pin(640, 62, "strategist")}
+      ${label("strategist", 690, 318)}
     </g>
     <g class="pets idle">
-      ${[["kepi", 52, 316, .26], ["oyen", 362, 168, .2], ["cici", 446, 118, .13], ["rangga", 648, 172, .22], ["nyu", 268, 392, .28]].map(([k, x, y, sc]) =>
+      ${[["kepi", 70, 228, .22], ["oyen", 400, 200, .18], ["cici", 300, 40, .12], ["rangga", 585, 170, .18], ["nyu", 270, 262, .22]].map(([k, x, y, sc]) =>
         `<svg class="pet-map" data-action="pet" data-v="${k}" data-slug="${k}" role="button" tabindex="0" aria-label="${PET_NAME[k]}" x="${x}" y="${y}" width="${200 * sc}" height="${200 * sc}" viewBox="0 0 200 200" overflow="visible">${ART[k]}</svg>`).join("")}
     </g>
   </svg>`;
@@ -1988,7 +1946,17 @@ const buildResult = x => {
   return `<div class="result"><div class="hero-row idle">${figure(st.avatar)}${figure(HELPER[st.screen] || "kepi", "pal")}</div><span class="kicker build">${l.resKB}</span><h2>${x.resT}</h2><p class="sub">${x.resS}</p><p class="lesson b">${x.lesson}</p>
     ${badge(x.badge, true)}<span class="gain">${x.gain}</span>${learnCard()}<button class="primary" data-action="home">${l.backShort}</button></div>`;
 };
-const stage = inner => `<section class="stage"><button class="back" data-action="home">${L().back}</button>${missionCard()}${inner}</section>`;
+const SCENE_ART = {
+  explorer: "pattern-isle/station-platform", explorer2: "pattern-isle/ijah-porch", "b-explorer": "pattern-isle/harbour-beach",
+  detective: "lighthouse-isle/lighthouse-base", detective2: "lighthouse-isle/harbour-night", "b-detective": "lighthouse-isle/lighthouse-lamp-room",
+  strategist: "news-port/news-desk", strategist2: "news-port/port-plaza", "b-strategist": "news-port/drawbridge-road",
+  daily: "pattern-isle/kite-hill"
+};
+const sceneArt = () => SCENE_ART[st.screen] && !st.screen.startsWith("b-") ? `<div class="scene-paint" style="background-image:url('art/${SCENE_ART[st.screen]}.webp')" aria-hidden="true"></div>` : "";
+const stage = inner => {
+  const build = st.screen.startsWith("b-") && SCENE_ART[st.screen];
+  return `<section class="stage${build ? " painted" : ""}"${build ? ` style="--paint:url('art/${SCENE_ART[st.screen]}.webp')"` : ""}><button class="back" data-action="home">${L().back}</button>${sceneArt()}${missionCard()}${inner}</section>`;
+};
 
 /* ---------- SOLVE ---------- */
 function renderDetective() {
